@@ -1,0 +1,695 @@
+<meta charset="utf-8">
+<title>Estado del Arte AulaConTexto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --u: min(1vw, 1.7778vh);
+  --paper:#EFF0EC; --paper-2:#F8F9F6; --paper-3:#E3E6DE;
+  --ink:#171B19; --ink-2:#4A524D; --ink-3:#7C847E;
+  --rule:#CFD3CB; --rule-2:#E0E3DB;
+  --accent:#A8332B; --accent-soft:rgba(168,51,43,.16); --accent-line:rgba(168,51,43,.34);
+  --slate:#34576B; --gold:#8A6D22;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141814; --paper-2:#1B211C; --paper-3:#232B24;
+    --ink:#E9EBE4; --ink-2:#AFB6AE; --ink-3:#7D867F;
+    --rule:#2D352E; --rule-2:#222A23;
+    --accent:#E27263; --accent-soft:rgba(226,114,99,.20); --accent-line:rgba(226,114,99,.40);
+    --slate:#84AFC5; --gold:#C9A550;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141814; --paper-2:#1B211C; --paper-3:#232B24;
+  --ink:#E9EBE4; --ink-2:#AFB6AE; --ink-3:#7D867F;
+  --rule:#2D352E; --rule-2:#222A23;
+  --accent:#E27263; --accent-soft:rgba(226,114,99,.20); --accent-line:rgba(226,114,99,.40);
+  --slate:#84AFC5; --gold:#C9A550;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+.deck{position:fixed; inset:0; display:flex; flex-direction:column;}
+
+/* ---------- stage ---------- */
+.stage{position:relative; flex:1; min-height:0; overflow:hidden;}
+.slide{
+  position:absolute; inset:0;
+  display:flex; padding:calc(var(--u)*3.4) calc(var(--u)*4.2) calc(var(--u)*3);
+  opacity:0; visibility:hidden; transform:translateY(calc(var(--u)*.7));
+  transition:opacity .34s ease, transform .34s ease, visibility .34s;
+}
+.slide.on{opacity:1; visibility:visible; transform:none;}
+
+/* margin rail: the manuscript annotation edge */
+.rail{
+  flex:0 0 calc(var(--u)*4); display:flex; flex-direction:column;
+  align-items:center; justify-content:flex-end;
+  border-right:1px solid var(--rule); margin-right:calc(var(--u)*3.4);
+  padding:calc(var(--u)*.3) 0 calc(var(--u)*.4);
+}
+.rail-tag{
+  font-family:var(--mono); font-size:calc(var(--u)*1.02); letter-spacing:.26em;
+  text-transform:uppercase; color:var(--ink-3);
+  writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;
+}
+.rail-num{
+  font-family:var(--mono); font-size:calc(var(--u)*1.15); color:var(--ink-3);
+  font-variant-numeric:tabular-nums;
+}
+.rail-num b{color:var(--ink); font-weight:500;}
+
+.body{flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; gap:calc(var(--u)*1.9);}
+
+/* ---------- type ---------- */
+.eyebrow{
+  display:flex; align-items:center; gap:calc(var(--u)*.85);
+  font-family:var(--mono); font-size:calc(var(--u)*1.06); font-weight:500;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--accent);
+}
+.eyebrow::before{content:""; width:calc(var(--u)*2.4); height:2px; background:var(--accent); flex:none;}
+.eyebrow span{color:var(--ink-3); letter-spacing:.18em;}
+
+h2{
+  margin:0; font-family:var(--serif); font-weight:500;
+  font-size:calc(var(--u)*4.25); line-height:1.06; letter-spacing:-.012em;
+  text-wrap:balance; max-width:24ch;
+}
+.lead{
+  margin:0; font-size:calc(var(--u)*1.92); line-height:1.42; color:var(--ink-2);
+  max-width:62ch;
+}
+p{margin:0;}
+.hot{color:var(--accent);}
+.mk{
+  background-image:linear-gradient(to bottom,transparent 60%,var(--accent-soft) 60%,var(--accent-soft) 93%,transparent 93%);
+  padding:0 .1em;
+}
+strong{font-weight:600; color:var(--ink);}
+em{font-family:var(--serif); font-style:italic; font-size:1.06em;}
+
+/* ---------- title slide ---------- */
+.cover{flex-direction:column; justify-content:center; padding-left:calc(var(--u)*9);}
+.cover h1{
+  margin:0; font-family:var(--serif); font-weight:400;
+  font-size:calc(var(--u)*8.6); line-height:.94; letter-spacing:-.025em;
+}
+.cover h1 i{font-style:italic; color:var(--accent);}
+.cover .sub{
+  font-size:calc(var(--u)*2.15); color:var(--ink-2); max-width:44ch; line-height:1.38;
+  margin-top:calc(var(--u)*1.6);
+}
+.cover .who{
+  display:flex; gap:calc(var(--u)*2.6); flex-wrap:wrap; margin-top:calc(var(--u)*3.4);
+  padding-top:calc(var(--u)*1.7); border-top:1px solid var(--rule);
+}
+.cover .who div{display:flex; flex-direction:column; gap:calc(var(--u)*.35);}
+.cover .who b{font-size:calc(var(--u)*1.72); font-weight:600;}
+.cover .who span{
+  font-family:var(--mono); font-size:calc(var(--u)*1.02); letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3);
+}
+.cover-meta{
+  position:absolute; right:calc(var(--u)*4.2); bottom:calc(var(--u)*3);
+  text-align:right; font-family:var(--mono); font-size:calc(var(--u)*1.06);
+  color:var(--ink-3); line-height:1.85; letter-spacing:.05em;
+}
+
+/* ---------- grids & cards ---------- */
+.grid{display:grid; gap:calc(var(--u)*1.35);}
+.g2{grid-template-columns:repeat(2,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+.card{
+  background:var(--paper-2); border:1px solid var(--rule-2); border-radius:3px;
+  padding:calc(var(--u)*1.5) calc(var(--u)*1.6);
+  display:flex; flex-direction:column; gap:calc(var(--u)*.75);
+}
+.card h3{
+  margin:0; font-family:var(--mono); font-size:calc(var(--u)*1.1); font-weight:600;
+  letter-spacing:.17em; text-transform:uppercase; color:var(--accent);
+}
+.card h3.s{color:var(--slate);} .card h3.g{color:var(--gold);}
+.card p{font-size:calc(var(--u)*1.55); line-height:1.44; color:var(--ink-2);}
+.card .src{
+  font-family:var(--mono); font-size:calc(var(--u)*1.12); line-height:1.72; color:var(--ink);
+  font-variant-numeric:tabular-nums; margin-top:auto; padding-top:calc(var(--u)*.5);
+  border-top:1px dashed var(--rule);
+}
+
+/* ---------- evidence rows ---------- */
+.rows{display:flex; flex-direction:column; border-top:1px solid var(--rule);}
+.row{
+  display:grid; grid-template-columns:15ch 1fr 1.35fr; gap:calc(var(--u)*2);
+  padding:calc(var(--u)*1.02) 0; border-bottom:1px solid var(--rule-2);
+  align-items:baseline;
+}
+.row dt{
+  font-family:var(--mono); font-size:calc(var(--u)*1.1); font-weight:600;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--ink);
+}
+.row .ev{font-family:var(--mono); font-size:calc(var(--u)*1.24); color:var(--slate); line-height:1.5;}
+.row .cl{font-size:calc(var(--u)*1.52); line-height:1.42; color:var(--ink-2);}
+.rows.compact .row{padding:calc(var(--u)*.74) 0;}
+.rows.compact .cl{font-size:calc(var(--u)*1.44);}
+.rows.compact .ev{font-size:calc(var(--u)*1.16);}
+.slide.tight h2{font-size:calc(var(--u)*3.45); max-width:34ch;}
+.slide.tight .body{gap:calc(var(--u)*1.5);}
+
+/* ---------- stat strip ---------- */
+.stats{display:flex; gap:calc(var(--u)*3.2); flex-wrap:wrap; align-items:flex-end;}
+.stat{display:flex; flex-direction:column; gap:calc(var(--u)*.25);}
+.stat b{
+  font-family:var(--serif); font-size:calc(var(--u)*3.5); font-weight:500; line-height:1;
+  font-variant-numeric:tabular-nums; letter-spacing:-.02em;
+}
+.stat span{
+  font-family:var(--mono); font-size:calc(var(--u)*1.04); letter-spacing:.15em;
+  text-transform:uppercase; color:var(--ink-3);
+}
+.stat.q b{color:var(--accent);}
+
+/* ---------- list ---------- */
+ul.pts{margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:calc(var(--u)*.95);}
+ul.pts li{
+  font-size:calc(var(--u)*1.66); line-height:1.44; color:var(--ink-2);
+  padding-left:calc(var(--u)*2.1); position:relative;
+}
+ul.pts li::before{
+  content:""; position:absolute; left:0; top:.62em;
+  width:calc(var(--u)*1.15); height:1px; background:var(--accent-line);
+}
+
+/* ---------- pull quote ---------- */
+.quote blockquote{
+  margin:0; font-family:var(--serif); font-weight:300;
+  font-size:calc(var(--u)*3.05); line-height:1.28; letter-spacing:-.01em;
+  max-width:34ch; text-wrap:balance;
+}
+.quote blockquote::before{
+  content:"”"; display:block; font-size:calc(var(--u)*7); line-height:.4;
+  color:var(--accent); margin-bottom:calc(var(--u)*1.4); margin-left:-.05em;
+}
+
+/* ---------- formula ---------- */
+.formula{
+  display:flex; align-items:center; gap:calc(var(--u)*1.4); flex-wrap:wrap;
+  padding:calc(var(--u)*1.5) 0; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+}
+.formula .t{
+  font-family:var(--serif); font-size:calc(var(--u)*2.35); line-height:1.15;
+}
+.formula .t.a{color:var(--accent); font-style:italic;}
+.formula .op{font-family:var(--mono); font-size:calc(var(--u)*2); color:var(--ink-3);}
+
+.note{
+  font-family:var(--mono); font-size:calc(var(--u)*1.08); line-height:1.6;
+  color:var(--ink-3); padding-left:calc(var(--u)*1.2);
+  border-left:2px solid var(--accent-line); max-width:70ch;
+}
+
+.refs{
+  columns:2; column-gap:calc(var(--u)*3); font-family:var(--mono);
+  font-size:calc(var(--u)*1.06); line-height:1.68; color:var(--ink-3);
+}
+.refs p{break-inside:avoid; margin-bottom:calc(var(--u)*.5);}
+.refs b{color:var(--ink-2); font-weight:500;}
+
+/* ---------- footer / progress ---------- */
+.foot{
+  flex:none; display:flex; align-items:center; gap:calc(var(--u)*1.6);
+  padding:0 calc(var(--u)*4.2) calc(var(--u)*1.5);
+}
+.track{flex:1; display:flex; gap:3px;}
+.track button{
+  flex:1; height:calc(var(--u)*.62); min-height:5px; padding:0; border:0; cursor:pointer;
+  background:var(--rule); border-radius:1px; transition:background .2s, transform .2s;
+}
+.track button:hover{transform:scaleY(1.6);}
+.track button.done{background:var(--ink-3);}
+.track button.now{background:var(--seg); transform:scaleY(1.9);}
+.track button:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+.speaker{
+  display:flex; align-items:center; gap:calc(var(--u)*.7);
+  font-family:var(--mono); font-size:calc(var(--u)*1.06); letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-2); white-space:nowrap;
+}
+.speaker i{width:calc(var(--u)*.85); height:calc(var(--u)*.85); border-radius:50%; background:var(--seg); flex:none;}
+.clock{
+  font-family:var(--mono); font-size:calc(var(--u)*1.1); letter-spacing:.08em;
+  color:var(--ink-3); font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.clock.run{color:var(--ink);}
+.clock.over{color:var(--accent);}
+.keys{
+  font-family:var(--mono); font-size:calc(var(--u)*.96); letter-spacing:.1em;
+  color:var(--ink-3); white-space:nowrap;
+  opacity:1; transition:opacity .5s ease;
+}
+.keys.hid{opacity:0;}
+
+/* ---------- notes panel ---------- */
+.notes{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  background:var(--paper-2); border-top:2px solid var(--accent);
+  padding:calc(var(--u)*1.8) calc(var(--u)*4.2);
+  max-height:46vh; overflow-y:auto;
+  transform:translateY(101%); transition:transform .28s ease;
+  box-shadow:0 -12px 40px rgba(0,0,0,.10);
+}
+.notes.on{transform:none;}
+.notes h4{
+  margin:0 0 calc(var(--u)*.9); font-family:var(--mono); font-size:calc(var(--u)*1.06);
+  letter-spacing:.2em; text-transform:uppercase; color:var(--accent); font-weight:600;
+}
+.notes p{
+  font-size:calc(var(--u)*1.62); line-height:1.55; color:var(--ink);
+  max-width:86ch; margin-bottom:calc(var(--u)*.8);
+}
+.notes .cue{
+  font-family:var(--mono); font-size:calc(var(--u)*1.06); color:var(--ink-3);
+  letter-spacing:.1em; margin-bottom:calc(var(--u)*.6);
+}
+
+/* ---------- overview ---------- */
+.over{
+  position:fixed; inset:0; z-index:50; background:var(--paper);
+  padding:calc(var(--u)*3.4) calc(var(--u)*4.2); overflow-y:auto;
+  display:none; grid-template-columns:repeat(4,1fr); gap:calc(var(--u)*1.2);
+  align-content:start;
+}
+.over.on{display:grid;}
+.over button{
+  text-align:left; font-family:var(--sans); cursor:pointer;
+  background:var(--paper-2); border:1px solid var(--rule); border-radius:3px;
+  padding:calc(var(--u)*1.15); display:flex; flex-direction:column; gap:calc(var(--u)*.5);
+  color:var(--ink); transition:border-color .18s, transform .18s;
+}
+.over button:hover,.over button:focus-visible{border-color:var(--accent); transform:translateY(-2px); outline:none;}
+.over button .n{
+  font-family:var(--mono); font-size:calc(var(--u)*1); letter-spacing:.16em; color:var(--ink-3);
+  display:flex; justify-content:space-between;
+}
+.over button .t{font-family:var(--serif); font-size:calc(var(--u)*1.6); line-height:1.2;}
+.over-h{
+  grid-column:1/-1; font-family:var(--mono); font-size:calc(var(--u)*1.1);
+  letter-spacing:.2em; text-transform:uppercase; color:var(--accent);
+  margin-bottom:calc(var(--u)*.6);
+}
+
+/* ---------- narrow screens ---------- */
+@media (max-aspect-ratio: 4/5), (max-width: 720px){
+  :root{--u:2.15vw;}
+  body{overflow:auto;}
+  .deck{position:static;}
+  .stage{overflow:visible;}
+  .slide{position:relative; inset:auto; opacity:1; visibility:visible; transform:none; display:none; min-height:78vh; padding:calc(var(--u)*3) calc(var(--u)*2.4);}
+  .slide.on{display:flex;}
+  .rail{flex-basis:calc(var(--u)*3.4); margin-right:calc(var(--u)*2);}
+  .g4,.g3,.g2{grid-template-columns:1fr;}
+  .row{grid-template-columns:1fr; gap:calc(var(--u)*.5);}
+  .refs{columns:1;}
+  .over{grid-template-columns:repeat(2,1fr);}
+  .cover{padding-left:calc(var(--u)*2.4);}
+  .cover h1{font-size:calc(var(--u)*5.4);}
+  .cover .sub{font-size:calc(var(--u)*1.95);}
+  .cover-meta{position:static; text-align:left; margin-top:calc(var(--u)*2.2);}
+  .stats{gap:calc(var(--u)*1.8) calc(var(--u)*2.4);}
+  .formula{flex-direction:column; align-items:flex-start; gap:calc(var(--u)*.7);}
+  .formula .op{display:none;}
+  .quote blockquote{font-size:calc(var(--u)*2.5);}
+  .notes{max-height:62vh;}
+  .foot{position:sticky; bottom:0; background:var(--paper); padding:calc(var(--u)*1.2) calc(var(--u)*2.4);}
+  .keys{display:none;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition-duration:.01ms !important;}
+}
+</style>
+
+<div class="deck" id="deck">
+<div class="stage" id="stage">
+
+<section class="slide cover on" data-sp="0" data-title="Portada">
+  <h1>Estado del arte<br><i>AulaConTexto</i></h1>
+  <p class="sub">IA generativa contextualizada como apoyo al trabajo docente: síntesis de 14 estudios y el vacío que queda abierto.</p>
+  <div class="who">
+    <div><b>Mora Nicolás</b><span>La revisión · Consenso 1</span></div>
+    <div><b>Buitrago Karen</b><span>Consensos 2 – 4</span></div>
+    <div><b>Cañón Andrés</b><span>Límites y vacío</span></div>
+  </div>
+  <div class="cover-meta">Seminario de Investigación<br>14 artículos · 2024–2026</div>
+  <div class="notes-src">
+    <p class="cue">Mora Nicolás — 0:00 – 0:15</p>
+    <p>Buenos días. Estado del arte de AulaConTexto, una plataforma de IA contextualizada para apoyar el trabajo docente. Revisamos catorce artículos publicados entre 2024 y 2026. Más que recorrer artículo por artículo, les traemos la síntesis de lo que encontramos.</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="0" data-title="Qué revisamos">
+  <div class="rail"><span class="rail-num"><b>02</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">La revisión</p>
+    <h2>¿Qué resolvió la literatura y qué queda abierto?</h2>
+    <p class="lead">Filtramos por <span class="mk">evidencia empírica</span>: docentes reales o sistemas efectivamente evaluados. Ventana <strong>2024–2026</strong>.</p>
+    <div class="stats">
+      <div class="stat"><b>14</b><span>Artículos revisados</span></div>
+      <div class="stat q"><b>9</b><span>Núcleo de evidencia</span></div>
+      <div class="stat"><b>4</b><span>Consensos derivados</span></div>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>Dimensiones</h3><p class="src">planeación · retroalimentación · evaluación · adopción</p></div>
+      <div class="card"><h3 class="s">Muestras</h3><p class="src">de 4 docentes a 1.043</p></div>
+      <div class="card"><h3 class="g">Contextos</h3><p class="src">India · Idaho · Uganda · China<br>EFL · K-12 · superior · formación docente</p></div>
+    </div>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Mora Nicolás — 0:15 – 0:55</p>
+    <p>La pregunta que guio la revisión: ¿qué ha resuelto la investigación reciente sobre IA generativa como apoyo al trabajo docente, y qué queda abierto?</p>
+    <p>Filtramos por evidencia empírica —docentes reales o sistemas evaluados—: de catorce artículos, nueve quedaron como núcleo.</p>
+    <p>Y el corpus es muy desigual: cubre cuatro dimensiones, va de cuatro docentes a mil cuarenta y tres, y está repartido entre India, Idaho, Uganda y China. De ahí sacamos cuatro consensos.</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="0" data-title="Consenso 1 · La IA ya produce material utilizable">
+  <div class="rail"><span class="rail-num"><b>03</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">Consenso 01</p>
+    <h2>La IA ya produce material docente utilizable</h2>
+    <div class="rows">
+      <div class="row"><dt>Planeación</dt><div class="ev">Shiksha Copilot · 2026<br>Zheng et al. · 2025<br>Kloker et al. · 2025</div><div class="cl">Planes de clase generados y usados por <strong>1.043 docentes</strong> en despliegue real; calidad del texto confirmada por evaluación experta.</div></div>
+      <div class="row"><dt>Retroalim.</dt><div class="ev">Han &amp; Li · 2024<br>Guo &amp; Wang · 2024</div><div class="cl">Feedback útil sobre escritura, con <strong>más volumen y mejor distribuido</strong> entre contenido, organización y lenguaje que el del docente.</div></div>
+      <div class="row"><dt>Evaluación</dt><div class="ev">Dai et al. · 2024<br>ChatGPT grading · 2024</div><div class="cl">GPT-4 superó a los docentes en varias dimensiones de feedback efectivo; las notas automáticas correlacionan alto con las del profesor.</div></div>
+    </div>
+    <p class="lead">La pregunta <em>«¿puede la IA hacerlo?»</em> <span class="mk">ya tiene respuesta</span>.</p>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Mora Nicolás — 0:55 – 1:30</p>
+    <p>Primer consenso: la IA ya produce material docente utilizable.</p>
+    <p>En planeación, Shiksha Copilot lo demostró con mil cuarenta y tres docentes, y LessonPlanLM confirma que el texto generado tiene calidad. En retroalimentación, Han y Li y Guo y Wang muestran que produce feedback útil, y de hecho más volumen y mejor distribuido que el docente. Y en evaluación, Dai y colaboradores encontraron que GPT-4 superó a los docentes en varias dimensiones.</p>
+    <p>La pregunta «¿puede la IA hacerlo?» ya tiene respuesta.</p>
+    <p><strong>Entrega:</strong> «Karen sigue con los otros tres consensos.»</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="1" data-title="Consenso 2 · El valor aparece cuando el docente valida">
+  <div class="rail"><span class="rail-num"><b>04</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">Consenso 02</p>
+    <h2>El valor aparece cuando el docente valida</h2>
+    <div class="rows">
+      <div class="row"><dt>A escala</dt><div class="ev">Shiksha Copilot</div><div class="cl">La arquitectura que funcionó no fue automatización: <strong>IA → curador humano → docente</strong>. Los docentes personalizaron los planes.</div></div>
+      <div class="row"><dt>Modelo</dt><div class="ev">Han &amp; Li · 2024</div><div class="cl">Proponen explícitamente <em>AI + Teacher</em>. Los estudiantes incorporaron más feedback cuando el docente lo revisaba.</div></div>
+      <div class="row"><dt>Y los límites<br>lo exigen</dt><div class="ev">Guo &amp; Wang; Dai et al.<br>ChatGPT grading</div><div class="cl">Alucinaciones, calificación sesgada a la baja, variabilidad entre ejecuciones, feedback de tipo distinto al docente.</div></div>
+    </div>
+    <p class="lead"><span class="mk">Ningún estudio del corpus defiende la sustitución.</span> El diseño convergente es la colaboración.</p>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Buitrago Karen — 1:30 – 2:10</p>
+    <p>Gracias. Segundo consenso: el valor aparece cuando el docente valida.</p>
+    <p>La arquitectura que funcionó a escala en Shiksha no fue automatización: fue IA, luego curador humano, luego el docente adaptando el plan a su clase. Han y Li proponen explícitamente el modelo «AI más Teacher», y los estudiantes incorporaron más feedback cuando el docente lo revisaba.</p>
+    <p>Y los límites lo exigen: alucinaciones, calificación sesgada a la baja, variabilidad entre ejecuciones. Ningún estudio del corpus defiende la sustitución.</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="1" data-title="Consenso 3 · Contextualizar mejora la salida">
+  <div class="rail"><span class="rail-num"><b>05</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">Consenso 03</p>
+    <h2>Contextualizar mejora la salida</h2>
+    <div class="rows">
+      <div class="row"><dt>Base de<br>conocimiento</dt><div class="ev">Zheng et al. · 2025</div><div class="cl">LLM + base de planes + RAG → planes más lógicos y precisos que sin ese enriquecimiento.</div></div>
+      <div class="row"><dt>Currículo<br>oficial</dt><div class="ev">Kloker et al. · 2025</div><div class="cl">RAG sobre los libros del currículo ugandés → 75–80 % de calidad media.</div></div>
+      <div class="row"><dt>Rúbrica en<br>el prompt</dt><div class="ev">Dai et al. · 2024</div><div class="cl">Introducir los criterios de evaluación explícitamente mejoró el feedback generado.</div></div>
+    </div>
+    <p class="lead">Pero en todos, <span class="mk">el contexto lo cargó el equipo de desarrollo</span>. Que sea el <strong>propio docente</strong> quien lo defina es otro nivel — y casi no está estudiado.</p>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Buitrago Karen — 2:10 – 2:50 · el pivote de la exposición</p>
+    <p>Tercer consenso, y para nosotros el más importante: contextualizar mejora la salida.</p>
+    <p>Zheng y colaboradores le dan al modelo una base de conocimiento y los planes salen más lógicos y precisos. El prototipo ugandés usa el currículo oficial. Dai mete la rúbrica dentro del prompt y mejora el feedback.</p>
+    <p>Pero fíjense en el patrón: en todos, el contexto lo cargó el equipo de desarrollo. Que sea el propio docente quien lo defina es otro nivel, y casi no está estudiado.</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="1" data-title="Consenso 4 · Que funcione no predice que se use">
+  <div class="rail"><span class="rail-num"><b>06</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">Consenso 04</p>
+    <h2>Que la IA funcione no predice que se use</h2>
+    <div class="rows">
+      <div class="row"><dt>Uso real</dt><div class="ev">Cheah et al. · 2025<br>89 docentes K-12</div><div class="cl">Menos de la mitad usaba GenAI, y sobre todo <strong>fuera del aula</strong>. Las barreras no son técnicas: creencias, ética y ausencia de políticas.</div></div>
+      <div class="row"><dt>Qué predice<br>la intención</dt><div class="ev">Sun et al. · 2026<br>485 docentes · PLS-SEM</div><div class="cl">Calidad de la salida → utilidad percibida → intención de uso.</div></div>
+      <div class="row"><dt>Percepción<br>del cambio</dt><div class="ev">Bower et al. · 2024<br>318 educadores</div><div class="cl">Reconocen que la GenAI ya modifica enseñanza y evaluación, y que deben cambiar sus prácticas.</div></div>
+    </div>
+    <p class="lead">La adopción depende del <span class="mk">usuario y de la institución</span>, no solo del modelo.</p>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Buitrago Karen — 2:50 – 3:15</p>
+    <p>Cuarto consenso: que la IA funcione no predice que se use.</p>
+    <p>Cheah, con ochenta y nueve docentes de K-12: menos de la mitad usaba IA generativa y sobre todo fuera del aula; las barreras son creencias, ética y falta de políticas. Sun, con cuatrocientos ochenta y cinco docentes: la calidad de la salida predice la utilidad percibida, y esa predice la intención de uso.</p>
+    <p><strong>Entrega:</strong> «Andrés cierra con lo que falta.»</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="2" data-title="Tres patrones que limitan la evidencia">
+  <div class="rail"><span class="rail-num"><b>07</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">Límites de la evidencia</p>
+    <h2>Tres patrones limitan lo que esa evidencia sostiene</h2>
+    <p class="note"><strong>Interpretación nuestra</strong> a partir de los patrones del corpus, no un hallazgo reportado por los autores.</p>
+    <div class="grid g3">
+      <div class="card"><h3>Fragmentación</h3><p>Cada sistema resuelve una tarea aislada. Ninguno integra <span class="mk">contexto + materiales + criterios + IA + revisión humana</span> como un flujo continuo de trabajo.</p></div>
+      <div class="card"><h3 class="s">Salidas, no procesos</h3><p>Casi todos evalúan la calidad del texto generado. Muy pocos miden cómo cambia el trabajo del docente a lo largo del tiempo.</p></div>
+      <div class="card"><h3 class="g">Contextos dispersos</h3><p>De 4 a 1.043 docentes, entre cuatro países y cuatro niveles educativos. Cuesta generalizar a un colegio colombiano.</p></div>
+    </div>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Cañón Andrés — 3:15 – 3:55</p>
+    <p>Gracias, Karen. Ahora, tres patrones limitan lo que esa evidencia puede sostener. Y aclaro: esto es interpretación nuestra a partir del corpus, no un hallazgo de los autores.</p>
+    <p>Primero, fragmentación: cada sistema resuelve una tarea aislada. Ninguno integra contexto, materiales, criterios, IA y revisión humana como un flujo continuo.</p>
+    <p>Segundo, casi todos evalúan la calidad de la salida, no cómo cambia el trabajo del docente en el tiempo. Y tercero, los contextos son tan dispersos que cuesta generalizar a un colegio colombiano.</p>
+  </div>
+</section>
+
+<section class="slide quote" data-sp="2" data-title="El vacío">
+  <div class="rail"><span class="rail-num"><b>08</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">El vacío investigativo</p>
+    <blockquote>Falta el <strong>diseño y la validación de sistemas</strong> que integren de manera estructurada el <span class="mk">contexto pedagógico que define el propio docente</span> —objetivos, materiales, actividades y criterios— manteniéndolo como responsable de la decisión final.</blockquote>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Cañón Andrés — 3:55 – 4:20 · leer despacio</p>
+    <p>De ahí el vacío: existe evidencia de que la IA generativa apoya la planeación, la evaluación y la retroalimentación, y de que la colaboración con el docente es beneficiosa. Lo que falta es el diseño y la validación de sistemas que integren el contexto pedagógico que define el propio profesor, manteniéndolo como responsable de la decisión final.</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="2" data-title="Dónde se ubica AulaConTexto">
+  <div class="rail"><span class="rail-num"><b>09</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">Nuestra posición</p>
+    <h2>La IA no es el centro: es el mecanismo</h2>
+    <div class="formula">
+      <span class="t">contexto del docente</span><span class="op">+</span>
+      <span class="t">IA generativa</span><span class="op">+</span>
+      <span class="t a">supervisión docente</span>
+    </div>
+    <div class="grid g3">
+      <div class="card"><h3>Creencias</h3><p>Utilidad percibida, confianza y autonomía deciden la adopción.</p></div>
+      <div class="card"><h3 class="s">Hábitos</h3><p>Integrarse a las rutinas que el docente ya tiene, no imponer una metodología nueva.</p></div>
+      <div class="card"><h3 class="g">Medio</h3><p>Estudiar la herramienta dentro de las condiciones reales de un colegio.</p></div>
+    </div>
+    <p class="lead">Leído con el <strong>MBPSC</strong>: no solo <em>si la tecnología funciona</em>, sino <em>cómo se integra al contexto real</em>.</p>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Cañón Andrés — 4:20 – 4:50 · cierre</p>
+    <p>Ahí se ubica AulaConTexto: contexto del docente, más IA generativa, más supervisión docente. La IA no es el centro del sistema: es el mecanismo con el que se aprovecha el contexto que define el profesor.</p>
+    <p>Y lo leemos con el Modelo Biopsicosocial: creencias, hábitos y medio institucional. No solo si la tecnología funciona, sino cómo se integra al colegio real. Muchas gracias.</p>
+  </div>
+</section>
+
+<section class="slide" data-sp="2" data-title="Referencias">
+  <div class="rail"><span class="rail-num"><b>10</b>/10</span></div>
+  <div class="body">
+    <p class="eyebrow">Referencias</p>
+    <h2>Corpus revisado</h2>
+    <div class="refs">
+      <p><b>Bower et al. (2024)</b> How should we change teaching and assessment…? Educ Inf Technol 29, 15403–15439.</p>
+      <p><b>Cheah, Lu &amp; Kim (2025)</b> Integrating generative AI in K-12 education. Computers and Education: AI 8, 100363.</p>
+      <p><b>Dai et al. (2024)</b> Assessing the proficiency of LLMs in automatic feedback generation. Computers and Education: AI 7, 100299.</p>
+      <p><b>Gurl, Markinson &amp; Artzt (2025)</b> Using ChatGPT as a lesson planning assistant. Digital Exp Math Educ 11, 114–139.</p>
+      <p><b>Guo &amp; Wang (2024)</b> To resist it or to embrace it? Educ Inf Technol 29, 8435–8463.</p>
+      <p><b>Han &amp; Li (2024)</b> Exploring ChatGPT-supported teacher feedback in the EFL context. System 126, 103502.</p>
+      <p><b>Kloker et al. (2025)</b> New Curriculum, New Chance — RAG for Lesson Planning in Ugandan Secondary Schools.</p>
+      <p><b>Shiksha Copilot (2026)</b> Teacher-AI Collaboration for Curating and Customizing Lesson Plans in Low-Resource Schools. ACM.</p>
+      <p><b>Sun, Jin &amp; Li (2026)</b> Determinants of perceived usefulness… in lesson planning. Frontiers in Psychology.</p>
+      <p><b>Zheng et al. (2025)</b> Knowledge-enhanced LLMs for automatic lesson plan generation. Humanit Soc Sci Commun 12, 1784.</p>
+    </div>
+  </div>
+  <div class="notes-src">
+    <p class="cue">Cañón Andrés — — · NO SE EXPONE · queda en pantalla para preguntas</p>
+    <p>Diapositiva de respaldo. Déjenla en pantalla durante las preguntas.</p>
+  </div>
+</section>
+
+</div><!-- /stage -->
+
+<footer class="foot">
+  <span class="speaker"><i></i><span id="spName">Mora Nicolás</span></span>
+  <nav class="track" id="track" aria-label="Navegación de diapositivas"></nav>
+  <span class="clock" id="clock">00:00 / 5:00</span>
+  <span class="keys">← → navegar · N libreto · T cronómetro · O índice</span>
+</footer>
+</div><!-- /deck -->
+
+<aside class="notes" id="notes" aria-live="polite">
+  <h4 id="notesHead">Libreto</h4>
+  <div id="notesBody"></div>
+</aside>
+
+<div class="over" id="over" role="dialog" aria-label="Índice de diapositivas"></div>
+
+<style>.notes-src{display:none;}</style>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var deck = document.getElementById('deck');
+  var track = document.getElementById('track');
+  var over = document.getElementById('over');
+  var notes = document.getElementById('notes');
+  var notesBody = document.getElementById('notesBody');
+  var notesHead = document.getElementById('notesHead');
+  var spName = document.getElementById('spName');
+  var clock = document.getElementById('clock');
+
+  var SPEAKERS = [
+    { name: 'Mora Nicolás', color: 'var(--slate)' },
+    { name: 'Buitrago Karen', color: 'var(--accent)' },
+    { name: 'Cañón Andrés', color: 'var(--gold)' }
+  ];
+  var i = 0, seen = 0;
+
+  /* ---- progress ticks ---- */
+  slides.forEach(function (s, n) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Ir a la diapositiva ' + (n + 1) + ': ' + s.dataset.title);
+    b.style.setProperty('--seg', SPEAKERS[+s.dataset.sp].color);
+    b.addEventListener('click', function () { go(n); });
+    track.appendChild(b);
+  });
+  var ticks = Array.prototype.slice.call(track.children);
+
+  /* ---- overview ---- */
+  var head = document.createElement('p');
+  head.className = 'over-h';
+  head.textContent = 'Índice · pulsa O o Esc para volver';
+  over.appendChild(head);
+  slides.forEach(function (s, n) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = '<span class="n"><span>' + String(n + 1).padStart(2, '0') +
+      '</span><span>' + SPEAKERS[+s.dataset.sp].name + '</span></span>' +
+      '<span class="t"></span>';
+    b.querySelector('.t').textContent = s.dataset.title;
+    b.addEventListener('click', function () { toggleOver(false); go(n); });
+    over.appendChild(b);
+  });
+
+  /* ---- navigation ---- */
+  function go(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    seen = Math.max(seen, i);
+    slides.forEach(function (s, k) { s.classList.toggle('on', k === i); });
+    var sp = SPEAKERS[+slides[i].dataset.sp];
+    deck.style.setProperty('--seg', sp.color);
+    spName.textContent = sp.name;
+    ticks.forEach(function (t, k) {
+      t.classList.toggle('now', k === i);
+      t.classList.toggle('done', k < i);
+    });
+    var src = slides[i].querySelector('.notes-src');
+    notesBody.innerHTML = src ? src.innerHTML : '<p>Sin libreto para esta diapositiva.</p>';
+    notesHead.textContent = 'Libreto · ' + sp.name + ' · ' + slides[i].dataset.title;
+    if (location.hash !== '#' + (i + 1)) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  function toggleOver(force) {
+    var on = typeof force === 'boolean' ? force : !over.classList.contains('on');
+    over.classList.toggle('on', on);
+  }
+
+  /* ---- timer ---- */
+  var TARGET = 300, elapsed = 0, running = false, tid = null;
+  function fmt(s) {
+    var m = Math.floor(Math.abs(s) / 60), r = Math.abs(s) % 60;
+    return (s < 0 ? '-' : '') + String(m).padStart(2, '0') + ':' + String(r).padStart(2, '0');
+  }
+  function paint() {
+    clock.textContent = fmt(elapsed) + ' / 5:00';
+    clock.classList.toggle('run', running);
+    clock.classList.toggle('over', elapsed > TARGET);
+  }
+  function toggleTimer() {
+    running = !running;
+    if (running) { tid = setInterval(function () { elapsed++; paint(); }, 1000); }
+    else { clearInterval(tid); }
+    paint();
+  }
+  function resetTimer() { running = false; clearInterval(tid); elapsed = 0; paint(); }
+
+  /* ---- keys ---- */
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); go(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); go(i - 1); }
+    else if (k === 'Home') { e.preventDefault(); go(0); }
+    else if (k === 'End') { e.preventDefault(); go(slides.length - 1); }
+    else if (k === 'n' || k === 'N') { notes.classList.toggle('on'); }
+    else if (k === 'o' || k === 'O') { toggleOver(); }
+    else if (k === 'Escape') { toggleOver(false); notes.classList.remove('on'); }
+    else if (k === 't') { toggleTimer(); }
+    else if (k === 'T') { resetTimer(); }
+  });
+
+  /* ---- click / swipe ---- */
+  document.getElementById('stage').addEventListener('click', function (e) {
+    if (e.target.closest('a, button')) return;
+    go(e.clientX < window.innerWidth * 0.28 ? i - 1 : i + 1);
+  });
+  var x0 = null;
+  document.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 55) go(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, { passive: true });
+
+  /* la ayuda de teclas se oculta sola: el público no la necesita */
+  var keys = document.querySelector('.keys'), kt = null;
+  function nudgeKeys() {
+    keys.classList.remove('hid');
+    clearTimeout(kt);
+    kt = setTimeout(function () { keys.classList.add('hid'); }, 6000);
+  }
+  document.addEventListener('mousemove', nudgeKeys);
+  document.addEventListener('keydown', nudgeKeys);
+  nudgeKeys();
+
+  var start = parseInt((location.hash || '').slice(1), 10);
+  go(isFinite(start) && start > 0 ? start - 1 : 0);
+  paint();
+})();
+</script>
