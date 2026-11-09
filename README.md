@@ -6,7 +6,7 @@ Plataforma de inteligencia artificial generativa **contextualizada por el docent
 
 ## Prototipo navegable
 
-- **Versión 2 (actual):** [`prototipo/prototipo-v2.html`](prototipo/prototipo-v2.html) · publicado en GitHub Pages: **PAGES_URL**
+- **Versión 2 (actual):** [`prototipo/prototipo-v2.html`](prototipo/prototipo-v2.html) · publicado en GitHub Pages: **https://havo-ao.github.io/aulacontexto/** (repositorio: https://github.com/havo-ao/aulacontexto)
 - Versión 1 (evaluada con usuarios): [`prototipo/prototipo-v1.html`](prototipo/prototipo-v1.html)
 - Informe de diseño, evaluación y rediseño: [`prototipo/informe-ux.md`](prototipo/informe-ux.md)
 
