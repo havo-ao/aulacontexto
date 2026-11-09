@@ -1,0 +1,171 @@
+<meta charset="utf-8">
+<title>AulaConTexto Prototipo v1</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Patrick+Hand+SC&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--pared:#F7F5F0;--tablero:#2E5E4E;--tiza:#F2F0E6;--madera:#B98A5A;--madera2:#8F6A43;--ink:#1F2A44;--ink2:#4A524D;--ink3:#7C847E;--ia:#6B5B95;--rojo:#C4463A;--ok:#2F7D5A;--rule:#D9D4C7;--card:#FFFFFF;
+ --sans:"Archivo",Arial,sans-serif;--serif:"Literata",Georgia,serif;--chalk:"Patrick Hand SC",cursive;--mono:"IBM Plex Mono",monospace;}
+*{box-sizing:border-box}body{margin:0;background:var(--pared);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45}
+button{font:inherit;cursor:pointer}input,select,textarea{font:inherit;width:100%;padding:9px 10px;border:1px solid var(--rule);border-radius:4px;background:#fff;color:var(--ink)}
+label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:12px 0 4px;font-family:var(--mono)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:12px 28px;background:#fff;border-bottom:1px solid var(--rule)}
+.brand{font-family:var(--serif);font-weight:600;font-size:20px}.brand span{color:var(--rojo)}
+.nav a{margin-left:18px;color:var(--ink2);text-decoration:none;font-size:14px}.nav a.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--rojo)}
+.user{font-size:13px;color:var(--ink3)}
+.screen{display:none;padding:28px;max-width:1240px;margin:0 auto}.screen.on{display:block}
+h1{font-family:var(--serif);font-weight:600;font-size:28px;margin:0 0 6px}h2{font-family:var(--serif);font-weight:600;font-size:20px;margin:0 0 10px}.sub{color:var(--ink2);margin:0 0 22px}
+.btn{border:1px solid var(--ink);background:#fff;color:var(--ink);padding:9px 16px;border-radius:4px;font-weight:600}
+.btn.p{background:var(--rojo);border-color:var(--rojo);color:#fff}.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}.btn.g{border-color:var(--rule);color:var(--ink2);font-weight:500}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.grid{display:grid;gap:16px}.g3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:18px}
+.curso{cursor:pointer;transition:transform .15s}.curso:hover{transform:translateY(-2px)}.curso .m{font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.curso h3{margin:6px 0 2px;font-family:var(--serif);font-size:18px}
+.nuevo{border:1px dashed var(--madera);color:var(--madera2);display:flex;align-items:center;justify-content:center;font-weight:600;min-height:120px}
+/* wizard */
+.steps{display:flex;gap:6px;margin:0 0 18px}.steps div{flex:1;height:4px;background:var(--rule)}.steps div.on{background:var(--rojo)}
+.modal{position:fixed;inset:0;background:rgba(31,42,68,.45);display:none;align-items:center;justify-content:center;padding:20px}.modal.on{display:flex}
+.box{background:#fff;border-radius:8px;width:min(680px,100%);max-height:90vh;overflow:auto;padding:26px}
+.row{display:flex;gap:12px}.row>*{flex:1}.acts{display:flex;justify-content:space-between;margin-top:22px;gap:10px}
+/* aula */
+.aula{display:grid;grid-template-columns:200px 1fr 340px;gap:18px;align-items:start}
+.estante{background:linear-gradient(#C99B68,var(--madera));border-radius:6px;padding:12px;min-height:420px;box-shadow:inset 0 -6px 0 var(--madera2)}
+.estante h4{color:#fff;margin:0 0 10px;font-family:var(--chalk);font-size:20px;font-weight:400}
+.libro{background:#F4EBDD;border-left:6px solid var(--rojo);padding:8px 10px;margin:0 0 8px;border-radius:2px;font-size:13px;cursor:grab;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.libro.on{outline:2px solid var(--tiza);opacity:.85}.libro small{display:block;color:var(--ink3);font-family:var(--mono);font-size:11px}
+.subir{border:1px dashed #fff;color:#fff;padding:10px;text-align:center;font-size:13px;border-radius:4px;cursor:pointer;margin-top:10px}
+.tablero{background:var(--tablero);border:10px solid var(--madera2);border-radius:6px;padding:22px 26px;min-height:420px;color:var(--tiza);box-shadow:inset 0 0 60px rgba(0,0,0,.25)}
+.tablero h3{font-family:var(--chalk);font-weight:400;font-size:30px;margin:0 0 14px;color:var(--tiza)}
+.tablero .t{font-family:var(--chalk);font-size:22px;line-height:1.35}.tablero .t li{margin-bottom:6px}
+.tablero .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.7;margin-top:16px}
+.afiche{position:absolute;right:26px;top:26px;background:#FBF7EE;color:var(--ink);padding:12px 14px;width:200px;transform:rotate(1.5deg);box-shadow:0 4px 12px rgba(0,0,0,.25);font-size:12px}
+.afiche b{display:block;font-family:var(--serif);margin-bottom:6px}.afiche div{display:flex;justify-content:space-between;border-bottom:1px dotted var(--rule);padding:3px 0}
+.tabwrap{position:relative}
+.escritorio{background:#EFE6D8;border-radius:6px;padding:14px;min-height:420px;border-top:10px solid var(--madera)}
+.escritorio h4{margin:0 0 10px;font-family:var(--serif);font-size:16px}
+.hoja{background:#fff;border:1px solid var(--rule);padding:10px 12px;margin-bottom:10px;border-radius:2px;cursor:pointer;box-shadow:1px 2px 0 rgba(0,0,0,.08)}
+.hoja .s{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}.hoja .s.p{color:var(--rojo)}.hoja .s.a{color:var(--ok)}
+.vacio{color:var(--ink3);font-size:13px;text-align:center;padding:30px 10px}
+/* procesando */
+.proc{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;color:var(--ink2)}
+.spin{width:44px;height:44px;border:4px solid var(--rule);border-top-color:var(--rojo);border-radius:50%;animation:r 1s linear infinite;margin-bottom:18px}@keyframes r{to{transform:rotate(360deg)}}
+/* resultado */
+.res{display:grid;grid-template-columns:1fr 300px;gap:22px}
+.doc{background:#fff;border:1px solid var(--rule);padding:30px 36px;font-family:var(--serif);font-size:16px;line-height:1.6}
+.doc h3{font-size:22px;margin:0 0 4px}.doc .ia{color:var(--ia)}.doc [contenteditable]:focus{outline:2px solid var(--rojo);outline-offset:4px}
+.doc .edit{color:var(--ink)}
+.leyenda{font-size:12px;color:var(--ink3);font-family:var(--mono);margin-bottom:12px}.leyenda i{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:4px}
+.side .card+.card{margin-top:12px}.side .s{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--rojo)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:4px;display:none;font-size:14px}.toast.on{display:block}
+.crumbs{font-size:13px;color:var(--ink3);margin-bottom:10px}.crumbs a{color:var(--ink2);text-decoration:none}
+.coord .hoja{cursor:default}
+@media (max-width:900px){.aula{grid-template-columns:1fr}.res{grid-template-columns:1fr}.g3{grid-template-columns:1fr}}
+</style>
+
+<div class="top"><div class="brand">Aula<span>Con</span>Texto</div>
+<div class="nav"><a href="#" class="on" data-go="cursos">Mis cursos</a><a href="#" data-go="coord">Vista coordinador</a><a href="#">Ayuda</a></div>
+<div class="user">M. Pérez · Docente · Cerrar sesión</div></div>
+
+<!-- CURSOS -->
+<section class="screen on" id="cursos">
+ <h1>Mis cursos</h1><p class="sub">Seleccione un curso para entrar al aula o cree uno nuevo.</p>
+ <div class="grid g3" id="lista"></div>
+</section>
+
+<!-- AULA -->
+<section class="screen" id="aula">
+ <div class="crumbs"><a href="#" data-go="cursos">Mis cursos</a> › <span id="cnombre"></span></div>
+ <div class="aula">
+  <div class="estante"><h4>Materiales</h4><div id="libros"></div><div class="subir" id="subir">+ Subir material</div></div>
+  <div class="tabwrap"><div class="tablero"><h3 id="tunidad">Unidad</h3><div class="lbl">OBJETIVOS</div><ul class="t" id="tobj"></ul><div class="lbl">TEMAS</div><ul class="t" id="ttem"></ul><div class="lbl">GRADO · METODOLOGÍA</div><div class="t" id="tmeta"></div></div>
+   <div class="afiche"><b>Rúbrica</b><div id="rub"></div></div>
+   <div style="display:flex;gap:10px;margin-top:14px"><button class="btn p" id="bgen">Generar…</button><button class="btn g" id="bctx">Editar contexto</button></div></div>
+  <div class="escritorio"><h4>Escritorio · borradores</h4><div id="hojas"></div></div>
+ </div>
+</section>
+
+<!-- PROCESANDO -->
+<section class="screen" id="proc"><div class="proc"><div class="spin"></div><div>Procesando…</div></div></section>
+
+<!-- RESULTADO -->
+<section class="screen" id="res">
+ <div class="crumbs"><a href="#" data-go="cursos">Mis cursos</a> › <a href="#" data-go="aula">Aula</a> › Resultado</div>
+ <div class="res"><div>
+  <div class="leyenda"><i style="background:var(--ia)"></i>Texto generado por la IA &nbsp; <i style="background:var(--ink)"></i>Texto del docente</div>
+  <div class="doc" id="doc"></div></div>
+  <div class="side"><div class="card"><div class="s">Estado</div><div id="estado" style="font-weight:600;margin:6px 0 14px">Borrador · pendiente de validación</div>
+   <button class="btn ok" id="baprob" style="width:100%">Aprobar</button><button class="btn g" id="bregen" style="width:100%;margin-top:8px">Regenerar</button><button class="btn g" id="bexp" style="width:100%;margin-top:8px" disabled>Exportar PDF</button></div>
+   <div class="card"><div class="s">Contexto usado</div><div id="ctxusado" style="font-size:13px;color:var(--ink2);margin-top:6px"></div></div></div></div>
+</section>
+
+<!-- COORDINADOR -->
+<section class="screen coord" id="coord"><h1>Vista coordinador</h1><p class="sub">Solo planes y retroalimentaciones aprobados.</p><div class="grid g3" id="aprobados"></div></section>
+
+<!-- WIZARD NUEVO CURSO -->
+<div class="modal" id="mw"><div class="box">
+ <div class="steps"><div class="on"></div><div></div><div></div><div></div></div>
+ <div id="w1"><h2>Paso 1 · Datos del curso</h2><label>Nombre del curso</label><input id="f_nombre" placeholder="Matemáticas 8.º B"><div class="row"><div><label>Grado</label><select id="f_grado"><option>6.º</option><option>7.º</option><option selected>8.º</option><option>9.º</option><option>10.º</option><option>11.º</option></select></div><div><label>Asignatura</label><input id="f_asig" placeholder="Matemáticas"></div></div><label>Metodología</label><select id="f_met"><option>Aprendizaje basado en problemas</option><option>Clase magistral con taller</option><option>Aprendizaje cooperativo</option><option>Aula invertida</option></select></div>
+ <div id="w2" style="display:none"><h2>Paso 2 · Objetivos de aprendizaje</h2><label>Objetivos (uno por línea)</label><textarea id="f_obj" rows="5" placeholder="Resolver ecuaciones lineales de una variable…"></textarea></div>
+ <div id="w3" style="display:none"><h2>Paso 3 · Temas de la unidad</h2><label>Nombre de la unidad</label><input id="f_uni" placeholder="Unidad 3 · Ecuaciones lineales"><label>Temas (uno por línea)</label><textarea id="f_tem" rows="5"></textarea></div>
+ <div id="w4" style="display:none"><h2>Paso 4 · Rúbrica</h2><p class="sub" style="font-size:13px">Criterio y peso (%). Debe sumar 100.</p><div id="crits"></div><button class="btn g" id="addc">+ Criterio</button></div>
+ <div class="acts"><button class="btn g" id="wprev">Atrás</button><div><button class="btn g" id="wcancel">Cancelar</button> <button class="btn p" id="wnext">Siguiente</button></div></div>
+</div></div>
+
+<!-- MODAL GENERAR -->
+<div class="modal" id="mg"><div class="box" style="width:460px"><h2>Generar</h2>
+ <label>Tipo</label><select id="g_tipo"><option value="plan">Plan de clase</option><option value="taller">Taller</option><option value="retro">Retroalimentación de un trabajo</option></select>
+ <label>Unidad</label><input id="g_uni"><div id="g_trab" style="display:none"><label>Trabajo del estudiante</label><select id="g_tsel"></select></div>
+ <label>Materiales a usar</label><div id="g_mats" style="font-size:13px"></div>
+ <div class="acts"><span></span><div><button class="btn g" id="gcancel">Cancelar</button> <button class="btn p" id="gok">Generar</button></div></div></div></div>
+
+<!-- MODAL SUBIR -->
+<div class="modal" id="ms"><div class="box" style="width:460px"><h2>Subir material</h2><label>Título</label><input id="s_tit" placeholder="Guía de ecuaciones"><label>Tipo</label><select id="s_tipo"><option>Guía</option><option>Plan de área</option><option>Trabajo de estudiante</option><option>Lectura</option></select><label>Contenido (texto)</label><textarea id="s_txt" rows="5"></textarea><div class="acts"><span></span><div><button class="btn g" id="scancel">Cancelar</button> <button class="btn p" id="sok">Guardar</button></div></div></div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let cursos=[{id:1,nombre:'Matemáticas 8.º B',grado:'8.º',asig:'Matemáticas',met:'Aprendizaje basado en problemas',uni:'Unidad 3 · Ecuaciones lineales',obj:['Resolver ecuaciones lineales de una variable','Modelar situaciones cotidianas con ecuaciones'],tem:['Igualdad y balanza','Despeje de la incógnita','Problemas de aplicación'],rub:[['Planteamiento',30],['Procedimiento',30],['Resultado',20],['Comunicación',20]],mats:[{t:'Guía de ecuaciones',tipo:'Guía',on:true},{t:'Plan de área · Matemáticas',tipo:'Plan de área',on:false},{t:'Trabajo · estudiante A-07',tipo:'Trabajo de estudiante',on:false}],hojas:[]},
+ {id:2,nombre:'Lenguaje 7.º A',grado:'7.º',asig:'Lenguaje',met:'Aprendizaje cooperativo',uni:'Unidad 2 · Texto argumentativo',obj:['Escribir un texto argumentativo con tesis y argumentos'],tem:['Tesis','Argumentos','Conectores'],rub:[['Tesis clara',30],['Argumentación',40],['Cohesión',30]],mats:[],hojas:[]}];
+let cur=null, hojaCur=null, wstep=1;
+function go(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id));$$('.nav a').forEach(a=>a.classList.toggle('on',a.dataset.go===id||(id==='aula'&&a.dataset.go==='cursos')));window.scrollTo(0,0)}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-go]');if(a){e.preventDefault();if(a.dataset.go==='coord')renderCoord();go(a.dataset.go)}});
+function renderCursos(){$('#lista').innerHTML=cursos.map(c=>`<div class="card curso" data-id="${c.id}"><div class="m">${c.grado} · ${c.asig}</div><h3>${c.nombre}</h3><div class="m">${c.uni}</div><div class="m" style="margin-top:8px">${c.hojas.length} borradores · ${c.hojas.filter(h=>h.ok).length} aprobados</div></div>`).join('')+`<div class="card nuevo" id="bnuevo">+ Nuevo curso</div>`;
+ $$('.curso').forEach(el=>el.onclick=()=>{cur=cursos.find(c=>c.id==el.dataset.id);renderAula();go('aula')});$('#bnuevo').onclick=openWizard}
+function renderAula(){$('#cnombre').textContent=cur.nombre;$('#tunidad').textContent=cur.uni;$('#tobj').innerHTML=cur.obj.map(o=>`<li>${o}</li>`).join('');$('#ttem').innerHTML=cur.tem.map(o=>`<li>${o}</li>`).join('');$('#tmeta').textContent=cur.grado+' · '+cur.met;
+ $('#rub').innerHTML=cur.rub.map(r=>`<div><span>${r[0]}</span><span>${r[1]} %</span></div>`).join('');
+ $('#libros').innerHTML=cur.mats.map((m,i)=>`<div class="libro ${m.on?'on':''}" data-i="${i}" title="Clic para usar/quitar del tablero">${m.t}<small>${m.tipo}${m.on?' · en uso':''}</small></div>`).join('')||'<div class="vacio" style="color:#fff">Sin materiales</div>';
+ $$('.libro').forEach(l=>l.onclick=()=>{cur.mats[l.dataset.i].on=!cur.mats[l.dataset.i].on;renderAula()});
+ $('#hojas').innerHTML=cur.hojas.length?cur.hojas.map((h,i)=>`<div class="hoja" data-i="${i}"><div class="s ${h.ok?'a':'p'}">${h.ok?'Aprobado':'Pendiente'}</div><b>${h.titulo}</b><div style="font-size:12px;color:var(--ink3)">${h.tipo} · v${h.v}</div></div>`).join(''):'<div class="vacio">Aún no hay borradores. Use «Generar…».</div>';
+ $$('.hoja').forEach(h=>h.onclick=()=>{hojaCur=cur.hojas[h.dataset.i];renderRes();go('res')})}
+// wizard
+function openWizard(){wstep=1;showStep();$('#crits').innerHTML='';addCrit('Planteamiento',30);addCrit('Procedimiento',30);addCrit('Resultado',40);$('#mw').classList.add('on')}
+function showStep(){[1,2,3,4].forEach(i=>$('#w'+i).style.display=i===wstep?'':'none');$$('.steps div').forEach((d,i)=>d.classList.toggle('on',i<wstep));$('#wprev').style.visibility=wstep>1?'visible':'hidden';$('#wnext').textContent=wstep<4?'Siguiente':'Crear curso'}
+function addCrit(n='',p=''){const d=document.createElement('div');d.className='row';d.innerHTML=`<input placeholder="Criterio" value="${n}"><input type="number" placeholder="%" value="${p}" style="max-width:90px">`;$('#crits').appendChild(d)}
+$('#addc').onclick=()=>addCrit();$('#wprev').onclick=()=>{wstep--;showStep()};$('#wcancel').onclick=()=>$('#mw').classList.remove('on');
+$('#wnext').onclick=()=>{if(wstep===1&&!$('#f_nombre').value){toast('El nombre del curso es obligatorio');return}if(wstep<4){wstep++;showStep();return}
+ const rub=$$('#crits .row').map(r=>[r.children[0].value,+r.children[1].value]).filter(r=>r[0]);const sum=rub.reduce((a,r)=>a+r[1],0);if(sum!==100){toast('La rúbrica debe sumar 100 % (suma '+sum+')');return}
+ cursos.push({id:Date.now(),nombre:$('#f_nombre').value,grado:$('#f_grado').value,asig:$('#f_asig').value||'—',met:$('#f_met').value,uni:$('#f_uni').value||'Unidad 1',obj:$('#f_obj').value.split('\n').filter(Boolean),tem:$('#f_tem').value.split('\n').filter(Boolean),rub,mats:[],hojas:[]});$('#mw').classList.remove('on');renderCursos();toast('Curso creado')};
+$('#bctx').onclick=()=>toast('Edición de contexto: no implementada en v1');
+// subir
+$('#subir').onclick=()=>$('#ms').classList.add('on');$('#scancel').onclick=()=>$('#ms').classList.remove('on');
+$('#sok').onclick=()=>{if(!$('#s_tit').value){toast('Falta el título');return}cur.mats.push({t:$('#s_tit').value,tipo:$('#s_tipo').value,on:false});$('#ms').classList.remove('on');renderAula();toast('Material guardado. Haga clic en él para usarlo en el tablero.')};
+// generar
+$('#bgen').onclick=()=>{$('#g_uni').value=cur.uni;$('#g_mats').innerHTML=cur.mats.filter(m=>m.on).map(m=>'• '+m.t).join('<br>')||'<i>Ningún material marcado «en uso»</i>';const trab=cur.mats.filter(m=>m.tipo==='Trabajo de estudiante');$('#g_tsel').innerHTML=trab.map(t=>`<option>${t.t}</option>`).join('')||'<option>No hay trabajos cargados</option>';$('#mg').classList.add('on')};
+$('#g_tipo').onchange=e=>$('#g_trab').style.display=e.target.value==='retro'?'':'none';$('#gcancel').onclick=()=>$('#mg').classList.remove('on');
+$('#gok').onclick=()=>{const tipo=$('#g_tipo').value;$('#mg').classList.remove('on');go('proc');setTimeout(()=>{const h=genera(tipo);cur.hojas.unshift(h);hojaCur=h;renderRes();go('res')},2600)};
+function genera(tipo){const mats=cur.mats.filter(m=>m.on).map(m=>m.t);const v=cur.hojas.filter(h=>h.tipo===tipo).length+1;
+ if(tipo==='retro')return{tipo:'Retroalimentación',titulo:'Retroalimentación · '+($('#g_tsel').value||'trabajo'),v,ok:false,mats,html:`<h3>Retroalimentación por criterio</h3><p class="ia">Estudiante A-07 (alias). Trabajo: ejercicios de la guía de ecuaciones.</p>${cur.rub.map(r=>`<p><b>${r[0]} (${r[1]} %)</b><br><span class="ia" contenteditable>El trabajo muestra ${r[0].toLowerCase()} parcialmente logrado: se identifica la incógnita, pero falta justificar el paso de despeje en el ejercicio 2. Se sugiere revisar la propiedad de la igualdad usada.</span></p>`).join('')}`};
+ const esTaller=tipo==='taller';return{tipo:esTaller?'Taller':'Plan de clase',titulo:(esTaller?'Taller · ':'Plan · ')+cur.uni,v,ok:false,mats,html:`<h3>${esTaller?'Taller':'Plan de clase'} · ${cur.uni}</h3><p style="font-size:13px;color:var(--ink3)">${cur.grado} · ${cur.met} · 50 min</p>
+ <p><b>Objetivo de la sesión</b><br><span class="ia" contenteditable>Al finalizar, el estudiante ${cur.obj[0]?cur.obj[0].toLowerCase():'alcanza el objetivo de la unidad'} a partir de situaciones cotidianas.</span></p>
+ <p><b>Inicio (10 min)</b><br><span class="ia" contenteditable>Situación problema: el presupuesto de una salida escolar. Los estudiantes identifican la cantidad desconocida.</span></p>
+ <p><b>Desarrollo (30 min)</b><br><span class="ia" contenteditable>Trabajo en parejas con ${mats[0]||'la guía del curso'}: tres ejercicios graduados sobre ${cur.tem.slice(0,2).join(' y ').toLowerCase()}.</span></p>
+ <p><b>Cierre (10 min)</b><br><span class="ia" contenteditable>Socialización de dos soluciones y verificación con el criterio «${cur.rub[1]?cur.rub[1][0]:'Procedimiento'}» de la rúbrica.</span></p>`}}
+function renderRes(){const h=hojaCur;$('#doc').innerHTML=h.html;$('#estado').textContent=h.ok?'Aprobado · v'+h.v:'Borrador · pendiente de validación';$('#estado').style.color=h.ok?'var(--ok)':'var(--rojo)';$('#baprob').disabled=h.ok;$('#bexp').disabled=!h.ok;$('#ctxusado').innerHTML=`Objetivos: ${cur.obj.length} · Temas: ${cur.tem.length} · Rúbrica: ${cur.rub.length} criterios<br>Materiales: ${h.mats.join(', ')||'ninguno'}`;
+ $$('#doc [contenteditable]').forEach(el=>el.addEventListener('input',()=>{el.classList.remove('ia');el.classList.add('edit')}))}
+$('#baprob').onclick=()=>{hojaCur.ok=true;hojaCur.html=$('#doc').innerHTML;renderRes();toast('Aprobado y publicado al curso')};
+$('#bregen').onclick=()=>{go('proc');setTimeout(()=>{const n=genera(hojaCur.tipo==='Retroalimentación'?'retro':hojaCur.tipo==='Taller'?'taller':'plan');n.v=hojaCur.v+1;cur.hojas.unshift(n);hojaCur=n;renderRes();go('res')},2200)};
+$('#bexp').onclick=()=>toast('PDF exportado (simulado)');
+function renderCoord(){const ap=cursos.flatMap(c=>c.hojas.filter(h=>h.ok).map(h=>({c,h})));$('#aprobados').innerHTML=ap.length?ap.map(({c,h})=>`<div class="card"><div class="hoja" style="margin:0"><div class="s a">Aprobado</div><b>${h.titulo}</b><div style="font-size:12px;color:var(--ink3)">${c.nombre} · v${h.v}</div></div></div>`).join(''):'<div class="vacio">Ningún plan aprobado todavía.</div>'}
+renderCursos();
+</script>
