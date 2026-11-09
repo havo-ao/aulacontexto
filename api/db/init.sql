@@ -1,0 +1,8 @@
+-- Modelo conceptual (docs/diagramas/12-modelo-datos.png). El nombre del estudiante no se almacena.
+CREATE TABLE usuario (id SERIAL PRIMARY KEY, nombre TEXT NOT NULL, correo TEXT UNIQUE NOT NULL, hash_contrasena TEXT NOT NULL, rol TEXT NOT NULL CHECK (rol IN ('docente','coordinador')));
+CREATE TABLE curso (id SERIAL PRIMARY KEY, docente_id INT NOT NULL REFERENCES usuario(id), nombre TEXT NOT NULL, grado TEXT, asignatura TEXT, metodologia TEXT, unidad TEXT, objetivos TEXT[] DEFAULT '{}', temas TEXT[] DEFAULT '{}', materiales TEXT);
+CREATE TABLE rubrica (id SERIAL PRIMARY KEY, curso_id INT NOT NULL REFERENCES curso(id) ON DELETE CASCADE, nombre TEXT NOT NULL);
+CREATE TABLE criterio (id SERIAL PRIMARY KEY, rubrica_id INT NOT NULL REFERENCES rubrica(id) ON DELETE CASCADE, descripcion TEXT NOT NULL, peso INT NOT NULL CHECK (peso BETWEEN 0 AND 100));
+CREATE TABLE plan (id SERIAL PRIMARY KEY, curso_id INT NOT NULL REFERENCES curso(id) ON DELETE CASCADE, unidad TEXT, version INT NOT NULL DEFAULT 1, contenido JSONB NOT NULL, estado TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente','aprobado')), aprobado_por INT REFERENCES usuario(id), aprobado_en TIMESTAMPTZ);
+CREATE TABLE trabajo (id SERIAL PRIMARY KEY, curso_id INT NOT NULL REFERENCES curso(id) ON DELETE CASCADE, alias_estudiante TEXT NOT NULL, archivo TEXT, fecha TIMESTAMPTZ DEFAULT now());
+CREATE TABLE retroalimentacion (id SERIAL PRIMARY KEY, trabajo_id INT NOT NULL REFERENCES trabajo(id) ON DELETE CASCADE, criterio_id INT NOT NULL REFERENCES criterio(id), texto_generado TEXT NOT NULL, texto_validado TEXT, estado TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente','aprobada')), validado_por INT REFERENCES usuario(id), validado_en TIMESTAMPTZ);
