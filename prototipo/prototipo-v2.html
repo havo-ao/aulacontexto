@@ -1,0 +1,147 @@
+<meta charset="utf-8">
+<title>AulaConTexto Prototipo v2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Patrick+Hand+SC&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--pared:#F7F5F0;--tablero:#2E5E4E;--tiza:#F2F0E6;--madera:#B98A5A;--madera2:#8F6A43;--ink:#1F2A44;--ink2:#4A524D;--ink3:#7C847E;--ia:#6B5B95;--ia2:#EFEAF7;--rojo:#C4463A;--ok:#2F7D5A;--ok2:#E6F2EB;--rule:#D9D4C7;
+ --sans:"Archivo",Arial,sans-serif;--serif:"Literata",Georgia,serif;--chalk:"Patrick Hand SC",cursive;--mono:"IBM Plex Mono",monospace;}
+*{box-sizing:border-box}body{margin:0;background:var(--pared);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45}
+button{font:inherit;cursor:pointer}input,select,textarea{font:inherit;width:100%;padding:10px 12px;border:1px solid var(--rule);border-radius:6px;background:#fff;color:var(--ink)}
+label{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin:12px 0 4px;font-family:var(--mono)}
+.top{display:flex;align-items:center;gap:18px;padding:10px 24px;background:#fff;border-bottom:1px solid var(--rule)}
+.brand{font-family:var(--serif);font-weight:600;font-size:20px}.brand span{color:var(--rojo)}
+.cursosel{display:flex;align-items:center;gap:8px;margin-left:10px}.cursosel select{width:auto;padding:7px 10px;font-weight:600;border-color:transparent;background:var(--pared)}
+.cursosel .add{border:none;background:none;color:var(--rojo);font-weight:600}
+.sp{flex:1}.rol{font-size:13px;color:var(--ink3)}.rol button{border:1px solid var(--rule);background:#fff;border-radius:20px;padding:4px 10px;font-size:12px;margin-left:6px}.rol button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.wrap{max-width:1240px;margin:0 auto;padding:22px 24px}
+.btn{border:1px solid var(--ink);background:#fff;color:var(--ink);padding:11px 18px;border-radius:6px;font-weight:600}
+.btn.p{background:var(--rojo);border-color:var(--rojo);color:#fff;font-size:16px;padding:13px 22px}.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff;font-size:16px;padding:13px 22px}.btn.g{border-color:var(--rule);color:var(--ink2);font-weight:500}.btn.sm{padding:6px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.aula{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+/* tablero compacto y legible */
+.tablero{background:var(--tablero);border:8px solid var(--madera2);border-radius:6px;padding:18px 20px;color:var(--tiza);box-shadow:inset 0 0 50px rgba(0,0,0,.25)}
+.tablero h3{font-family:var(--chalk);font-weight:400;font-size:28px;margin:0 0 4px;color:var(--tiza)}
+.tablero .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.75;margin-top:14px;display:flex;justify-content:space-between;align-items:center}
+.tablero .lbl button{background:none;border:1px solid rgba(255,255,255,.35);color:var(--tiza);border-radius:4px;font-size:11px;padding:2px 7px}
+.tablero ul{margin:6px 0 0;padding-left:18px;font-family:var(--serif);font-size:15px;line-height:1.4}.tablero li{margin-bottom:4px}
+.tablero .rub div{display:flex;justify-content:space-between;font-family:var(--serif);font-size:14px;padding:3px 0;border-bottom:1px dotted rgba(255,255,255,.25)}
+.tablero .meta{font-family:var(--mono);font-size:12px;opacity:.85;margin-top:4px}
+.tablero.vacio ul,.tablero.vacio .rub{opacity:.6}
+/* zona de trabajo */
+.zona{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:22px 24px;min-height:420px}
+.zona h2{font-family:var(--serif);font-weight:600;font-size:22px;margin:0 0 4px}.zona .sub{color:var(--ink2);margin:0 0 16px}
+.drop{border:2px dashed var(--madera);background:#FBF7EE;border-radius:8px;padding:22px;text-align:center;color:var(--madera2);cursor:pointer}
+.drop b{display:block;color:var(--ink);font-size:16px}.drop.on{background:#F4EBDD;border-style:solid}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#F4EBDD;border:1px solid var(--madera);border-radius:20px;padding:5px 10px 5px 12px;font-size:13px}
+.chip.off{opacity:.5;border-style:dashed}.chip button{border:none;background:none;color:var(--ink3);padding:0 2px}.chip .k{font-family:var(--mono);font-size:10px;color:var(--ink3)}
+.cta{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}.cta .hint{font-size:13px;color:var(--ink3);width:100%}
+/* progreso */
+.prog{padding:10px 0}.prog .st{display:flex;align-items:center;gap:12px;padding:9px 0;color:var(--ink3);font-size:15px}
+.prog .st i{width:22px;height:22px;border-radius:50%;border:2px solid var(--rule);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-style:normal}
+.prog .st.on{color:var(--ink)}.prog .st.on i{border-color:var(--rojo);border-top-color:transparent;animation:r .9s linear infinite}.prog .st.done{color:var(--ink2)}.prog .st.done i{background:var(--ok);border-color:var(--ok);color:#fff}
+@keyframes r{to{transform:rotate(360deg)}}
+.prog .eta{font-family:var(--mono);font-size:12px;color:var(--ink3);margin-top:8px}
+/* resultado */
+.res .head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.estado{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:4px}.estado.p{background:#FBEDEB;color:var(--rojo)}.estado.a{background:var(--ok2);color:var(--ok)}
+.leyenda{display:flex;gap:16px;font-size:13px;color:var(--ink2);margin-bottom:14px;align-items:center}.leyenda i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px}
+.doc{font-family:var(--serif);font-size:16px;line-height:1.6}
+.bloque{position:relative;padding:10px 12px;border-radius:6px;margin-bottom:6px}.bloque:hover{background:#FAFAF8}
+.bloque .rg{position:absolute;right:8px;top:8px;display:none}.bloque:hover .rg{display:block}
+.doc .ia{background:var(--ia2);color:#2E2650;border-left:3px solid var(--ia);padding:2px 8px;display:block;border-radius:0 4px 4px 0}
+.doc .edit{background:transparent;border-left:3px solid var(--ink);color:var(--ink)}
+.doc [contenteditable]:focus{outline:2px solid var(--rojo);outline-offset:3px}
+.doc h3{font-size:22px;margin:0 0 2px}.doc .m{font-size:13px;color:var(--ink3);font-family:var(--sans);margin-bottom:10px}
+.acts{display:flex;gap:10px;margin-top:18px;align-items:center;flex-wrap:wrap}.acts .sp{flex:1}
+/* escritorio */
+.escritorio{margin-top:20px;background:#EFE6D8;border-radius:8px;padding:14px 18px;border-top:8px solid var(--madera)}
+.escritorio .tabs{display:flex;gap:14px;margin-bottom:10px;font-size:14px}.escritorio .tabs b{cursor:pointer;color:var(--ink3);font-weight:500}.escritorio .tabs b.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--rojo)}
+.hojas{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}.hoja{min-width:220px;background:#fff;border:1px solid var(--rule);padding:10px 12px;border-radius:4px;cursor:pointer;box-shadow:1px 2px 0 rgba(0,0,0,.08)}
+.hoja .s{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}.hoja .s.p{color:var(--rojo)}.hoja .s.a{color:var(--ok)}.hoja small{color:var(--ink3)}
+.vacio{color:var(--ink3);font-size:13px;padding:10px 0}
+.modal{position:fixed;inset:0;background:rgba(31,42,68,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.modal.on{display:flex}
+.box{background:#fff;border-radius:10px;width:min(640px,100%);max-height:90vh;overflow:auto;padding:26px}.box h2{font-family:var(--serif);margin:0 0 4px}.box .sub{color:var(--ink2);margin:0 0 10px;font-size:14px}
+.row{display:flex;gap:12px}.row>*{flex:1}.macts{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:6px;display:none;font-size:14px;z-index:9}.toast.on{display:block}
+.tip{background:#FFF8DC;border:1px solid #E8D27A;border-radius:6px;padding:8px 12px;font-size:13px;color:#6B5A12;margin-bottom:12px;display:flex;justify-content:space-between;gap:10px}.tip button{border:none;background:none;color:#6B5A12;font-weight:600}
+.banner{background:var(--ink);color:#fff;padding:8px 24px;font-size:13px;text-align:center}
+@media (max-width:900px){.aula{grid-template-columns:1fr}}
+</style>
+<div class="top"><div class="brand">Aula<span>Con</span>Texto</div>
+ <div class="cursosel"><span style="color:var(--ink3);font-size:13px">Curso</span><select id="csel"></select><button class="add" id="bnuevo">+ Nuevo</button></div>
+ <div class="sp"></div><div class="rol">Ver como <button class="on" data-rol="doc">Docente</button><button data-rol="coord">Coordinador</button></div></div>
+<div class="banner" id="banner" style="display:none">Vista de coordinador · solo lectura · se muestran únicamente los planes y retroalimentaciones aprobados</div>
+<div class="wrap">
+ <div class="tip" id="tip"><span><b>Para empezar:</b> el tablero ya tiene el contexto del curso. Suelta un material o pulsa «Generar plan» y revisa el borrador antes de aprobarlo.</span><button id="tipx">Entendido</button></div>
+ <div class="aula">
+  <div class="tablero" id="tablero"></div>
+  <div>
+   <div class="zona" id="zona"></div>
+   <div class="escritorio"><div class="tabs"><b class="on" data-t="p">Pendientes <span id="np"></span></b><b data-t="a">Aprobados <span id="na"></span></b></div><div class="hojas" id="hojas"></div></div>
+  </div>
+ </div>
+</div>
+<div class="modal" id="mn"><div class="box"><h2>Nuevo curso</h2><p class="sub">Solo tres datos. El contexto (objetivos, temas, rúbrica) se completa en el tablero cuando quieras; mientras tanto se usa una rúbrica base.</p>
+ <label>Nombre</label><input id="n_nombre" placeholder="Ciencias 9.º A"><div class="row"><div><label>Grado</label><select id="n_grado"><option>6.º</option><option>7.º</option><option>8.º</option><option selected>9.º</option><option>10.º</option><option>11.º</option></select></div><div><label>Asignatura</label><input id="n_asig" placeholder="Ciencias naturales"></div></div>
+ <div class="macts"><button class="btn g" id="ncancel">Cancelar</button><button class="btn p" id="nok">Crear curso</button></div></div></div>
+<div class="modal" id="me"><div class="box"><h2 id="e_t">Editar</h2><p class="sub" id="e_s"></p><textarea id="e_txt" rows="6"></textarea><div class="macts"><button class="btn g" id="ecancel">Cancelar</button><button class="btn p" id="eok">Guardar</button></div></div></div>
+<div class="modal" id="mm"><div class="box"><h2>Pegar material</h2><p class="sub">Pega el texto de la guía, lectura o trabajo. Los nombres de estudiantes se reemplazan por un alias antes de enviar nada al modelo.</p><div class="row"><div><label>Título</label><input id="m_tit" placeholder="Guía de ecuaciones"></div><div><label>Tipo</label><select id="m_tipo"><option>Guía</option><option>Lectura</option><option>Plan de área</option><option>Trabajo de estudiante</option></select></div></div><label>Texto</label><textarea id="m_txt" rows="5"></textarea><div class="macts"><button class="btn g" id="mcancel">Cancelar</button><button class="btn p" id="mok">Agregar al tablero</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const RUB0=[['Comprensión',30],['Procedimiento',40],['Comunicación',30]];
+let cursos=[{id:1,nombre:'Matemáticas 8.º B',grado:'8.º',asig:'Matemáticas',met:'Aprendizaje basado en problemas',uni:'Unidad 3 · Ecuaciones lineales',obj:['Resolver ecuaciones lineales de una variable','Modelar situaciones cotidianas con ecuaciones'],tem:['Igualdad y balanza','Despeje de la incógnita','Problemas de aplicación'],rub:[['Planteamiento',30],['Procedimiento',30],['Resultado',20],['Comunicación',20]],mats:[{t:'Guía de ecuaciones',tipo:'Guía',on:true},{t:'Trabajo · estudiante A-07',tipo:'Trabajo de estudiante',on:false}],hojas:[]},
+ {id:2,nombre:'Lenguaje 7.º A',grado:'7.º',asig:'Lenguaje',met:'Aprendizaje cooperativo',uni:'Unidad 2 · Texto argumentativo',obj:['Escribir un texto argumentativo con tesis y argumentos'],tem:['Tesis','Argumentos','Conectores'],rub:[['Tesis clara',30],['Argumentación',40],['Cohesión',30]],mats:[],hojas:[]}];
+let cur=cursos[0],rol='doc',tab='p',hoja=null,modo='idle',edit=null;
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2400)};
+function renderSel(){$('#csel').innerHTML=cursos.map(c=>`<option value="${c.id}" ${c===cur?'selected':''}>${c.nombre}</option>`).join('')}
+$('#csel').onchange=e=>{cur=cursos.find(c=>c.id==e.target.value);modo='idle';hoja=null;render()};
+function renderTablero(){const t=$('#tablero');const ro=rol==='coord';const ed=(k,l)=>ro?'':`<button data-edit="${k}">${l}</button>`;t.className='tablero'+(cur.obj.length?'':' vacio');
+ t.innerHTML=`<h3>${cur.uni}</h3><div class="meta">${cur.grado} · ${cur.asig} · ${cur.met}</div>
+ <div class="lbl"><span>OBJETIVOS</span>${ed('obj','editar')}</div><ul>${cur.obj.map(o=>`<li>${o}</li>`).join('')||'<li><i>Añade los objetivos de la unidad</i></li>'}</ul>
+ <div class="lbl"><span>TEMAS</span>${ed('tem','editar')}</div><ul>${cur.tem.map(o=>`<li>${o}</li>`).join('')||'<li><i>Añade los temas</i></li>'}</ul>
+ <div class="lbl"><span>RÚBRICA</span>${ed('rub','editar')}</div><div class="rub">${cur.rub.map(r=>`<div><span>${r[0]}</span><span>${r[1]} %</span></div>`).join('')}</div>`;
+ $$('[data-edit]').forEach(b=>b.onclick=()=>openEdit(b.dataset.edit))}
+function openEdit(k){edit=k;const map={obj:['Objetivos de aprendizaje','Uno por línea.',cur.obj.join('\n')],tem:['Temas de la unidad','Uno por línea.',cur.tem.join('\n')],rub:['Rúbrica','Un criterio por línea con su peso: «Procedimiento 40». Si la suma no es 100 se ajusta proporcionalmente.',cur.rub.map(r=>r[0]+' '+r[1]).join('\n')]}[k];$('#e_t').textContent=map[0];$('#e_s').textContent=map[1];$('#e_txt').value=map[2];$('#me').classList.add('on')}
+$('#ecancel').onclick=()=>$('#me').classList.remove('on');
+$('#eok').onclick=()=>{const v=$('#e_txt').value.split('\n').map(s=>s.trim()).filter(Boolean);if(edit==='rub'){let r=v.map(l=>{const m=l.match(/^(.*?)\s+(\d+)\s*%?$/);return m?[m[1],+m[2]]:[l,0]});const s=r.reduce((a,x)=>a+x[1],0)||1;r=r.map(x=>[x[0],Math.round(x[1]*100/s)]);cur.rub=r}else cur[edit]=v;$('#me').classList.remove('on');render();toast('Tablero actualizado')};
+function renderZona(){const z=$('#zona');
+ if(rol==='coord'){z.innerHTML=`<h2>Planes aprobados · ${cur.nombre}</h2><p class="sub">Vista de solo lectura.</p>`+(cur.hojas.filter(h=>h.ok).map(h=>`<div class="bloque" style="border:1px solid var(--rule)"><b>${h.titulo}</b> <small style="color:var(--ink3)">v${h.v} · aprobado por M. Pérez</small><div class="doc" style="font-size:14px;margin-top:6px">${h.html.replace(/contenteditable/g,'')}</div></div>`).join('')||'<div class="vacio">Este curso no tiene planes aprobados todavía.</div>');return}
+ if(modo==='idle'){z.innerHTML=`<h2>¿Qué necesitas para ${cur.uni.split('·')[0].trim()}?</h2><p class="sub">La IA usará el tablero de la izquierda y los materiales marcados. Tú revisas y apruebas antes de que algo se publique.</p>
+  <div class="drop" id="drop"><b>Suelta aquí un material o pega texto</b>guía, lectura, plan de área o trabajo de un estudiante</div>
+  <div class="chips" id="chips"></div>
+  <div class="cta"><button class="btn p" id="bplan">Generar plan de clase</button><button class="btn" id="bretro" ${cur.mats.some(m=>m.tipo==='Trabajo de estudiante')?'':'disabled'}>Retroalimentar un trabajo</button><span class="hint" id="hint"></span></div>`;
+  renderChips();$('#drop').onclick=()=>$('#mm').classList.add('on');$('#bplan').onclick=()=>generar('plan');$('#bretro').onclick=()=>generar('retro');
+  $('#hint').textContent=cur.mats.some(m=>m.tipo==='Trabajo de estudiante')?'':'Para retroalimentar, agrega primero un trabajo de estudiante.';return}
+ if(modo==='proc'){z.innerHTML=`<h2>Redactando…</h2><p class="sub">Puedes seguir editando el tablero; el borrador aparecerá aquí.</p><div class="prog" id="prog">${['Leyendo objetivos, temas y rúbrica','Leyendo materiales marcados','Anonimizando nombres de estudiantes','Redactando el borrador','Verificando contra la rúbrica'].map(s=>`<div class="st"><i></i>${s}</div>`).join('')}<div class="eta" id="eta">Tiempo estimado: 10 s</div></div><button class="btn g sm" id="bcancel" style="margin-top:8px">Cancelar</button>`;$('#bcancel').onclick=()=>{clearInterval(timer);modo='idle';renderZona()};return}
+ // resultado
+ const h=hoja;z.innerHTML=`<div class="res"><div class="head"><div><a href="#" id="back" style="color:var(--ink2);font-size:13px">← Volver al aula</a><h2 style="margin-top:4px">${h.titulo}</h2></div><span class="estado ${h.ok?'a':'p'}">${h.ok?'Aprobado · v'+h.v:'Borrador · pendiente de tu validación'}</span></div>
+  <div class="leyenda"><span><i style="background:var(--ia2);border-left:3px solid var(--ia)"></i>Generado por la IA</span><span><i style="background:#fff;border-left:3px solid var(--ink)"></i>Editado por ti</span><span style="color:var(--ink3)">Haz clic en cualquier bloque para editarlo · pasa el mouse para regenerar solo ese bloque</span></div>
+  <div class="doc" id="doc">${h.html}</div>
+  <div class="acts">${h.ok?`<button class="btn ok" id="bexp">Exportar PDF</button><span class="hint" style="font-size:13px;color:var(--ink3)">Publicado al curso y visible para coordinación.</span>`:`<button class="btn ok" id="bok">Aprobar y publicar</button><button class="btn g" id="bre">Regenerar todo</button><span class="sp"></span><span style="font-size:13px;color:var(--ink3)">Tus cambios se guardan solos</span>`}</div></div>`;
+ $('#back').onclick=e=>{e.preventDefault();modo='idle';renderZona()};
+ $$('#doc .bloque').forEach(b=>{const rg=b.querySelector('.rg');if(rg)rg.onclick=()=>{const sp=b.querySelector('[contenteditable]');sp.textContent=sp.textContent.replace(/\.$/,'')+' (variante regenerada).';sp.className='ia';toast('Bloque regenerado')}});
+ $$('#doc [contenteditable]').forEach(el=>el.addEventListener('input',()=>{el.classList.remove('ia');el.classList.add('edit');h.html=$('#doc').innerHTML}));
+ if(!h.ok){$('#bok').onclick=()=>{h.ok=true;h.html=$('#doc').innerHTML;renderZona();renderHojas();toast('Aprobado. Ya aparece en la vista del coordinador.')};$('#bre').onclick=()=>generar(h.k)}else $('#bexp').onclick=()=>toast('PDF exportado (simulado)')}
+function renderChips(){$('#chips').innerHTML=cur.mats.map((m,i)=>`<span class="chip ${m.on?'':'off'}" title="${m.on?'Se usará en la generación':'No se usará'}"><span class="k">${m.tipo}</span>${m.t}<button data-tog="${i}" title="${m.on?'Quitar':'Usar'}">${m.on?'✓':'+'}</button></span>`).join('')||'<span class="vacio">Sin materiales aún; la IA usará solo el tablero.</span>';$$('[data-tog]').forEach(b=>b.onclick=()=>{cur.mats[b.dataset.tog].on=!cur.mats[b.dataset.tog].on;renderChips()})}
+$('#mcancel').onclick=()=>$('#mm').classList.remove('on');$('#mok').onclick=()=>{if(!$('#m_tit').value){toast('Ponle un título al material');return}cur.mats.push({t:$('#m_tit').value,tipo:$('#m_tipo').value,on:true});$('#mm').classList.remove('on');$('#m_tit').value='';$('#m_txt').value='';renderZona();toast('Material agregado y marcado para usarse')};
+let timer;function generar(k){modo='proc';renderZona();const sts=$$('#prog .st');let i=0;sts[0].classList.add('on');timer=setInterval(()=>{sts[i].classList.remove('on');sts[i].classList.add('done');sts[i].querySelector('i').textContent='✓';i++;$('#eta').textContent='Tiempo estimado: '+Math.max(0,10-i*2)+' s';if(i<sts.length)sts[i].classList.add('on');else{clearInterval(timer);hoja=genera(k);cur.hojas.unshift(hoja);modo='res';tab='p';render()}},900)}
+const B=(tit,txt)=>`<div class="bloque"><b style="font-family:var(--sans);font-size:13px;color:var(--ink3)">${tit}</b><span class="ia" contenteditable>${txt}</span><button class="btn g sm rg">↻ regenerar</button></div>`;
+function genera(k){const mats=cur.mats.filter(m=>m.on).map(m=>m.t);const v=cur.hojas.filter(h=>h.k===k).length+1;
+ if(k==='retro'){const t=cur.mats.find(m=>m.tipo==='Trabajo de estudiante');return{k,tipo:'Retroalimentación',titulo:'Retroalimentación · '+(t?t.t:'trabajo'),v,ok:false,html:`<h3>Retroalimentación por criterio</h3><div class="m">Estudiante A-07 (alias) · ${cur.uni}</div>${cur.rub.map(r=>B(`${r[0]} · ${r[1]} %`,`${r[0]} parcialmente logrado: se identifica la incógnita, pero falta justificar el paso de despeje en el ejercicio 2. Revisar la propiedad de la igualdad usada.`)).join('')}`}}
+ return{k,tipo:'Plan de clase',titulo:'Plan · '+cur.uni,v,ok:false,html:`<h3>Plan de clase · ${cur.uni}</h3><div class="m">${cur.grado} · ${cur.met} · 50 min · materiales: ${mats.join(', ')||'ninguno'}</div>
+ ${B('Objetivo de la sesión',`Al finalizar, el estudiante ${cur.obj[0]?cur.obj[0].toLowerCase():'alcanza el objetivo de la unidad'} a partir de situaciones cotidianas.`)}
+ ${B('Inicio · 10 min','Situación problema: el presupuesto de una salida escolar. Los estudiantes identifican la cantidad desconocida.')}
+ ${B('Desarrollo · 30 min',`Trabajo en parejas con ${mats[0]||'la guía del curso'}: tres ejercicios graduados sobre ${cur.tem.slice(0,2).join(' y ').toLowerCase()||'los temas de la unidad'}.`)}
+ ${B('Cierre · 10 min',`Socialización de dos soluciones y verificación con el criterio «${cur.rub[1]?cur.rub[1][0]:cur.rub[0][0]}» de la rúbrica.`)}`}}
+function renderHojas(){const hs=cur.hojas.filter(h=>tab==='p'?!h.ok:h.ok);$('#np').textContent=`(${cur.hojas.filter(h=>!h.ok).length})`;$('#na').textContent=`(${cur.hojas.filter(h=>h.ok).length})`;
+ $$('.tabs b').forEach(b=>{b.classList.toggle('on',b.dataset.t===tab);b.onclick=()=>{tab=b.dataset.t;renderHojas()}});
+ $('#hojas').innerHTML=hs.length?hs.map((h,i)=>`<div class="hoja" data-i="${cur.hojas.indexOf(h)}"><div class="s ${h.ok?'a':'p'}">${h.ok?'Aprobado':'Pendiente'}</div><b>${h.titulo}</b><br><small>${h.tipo} · v${h.v}</small></div>`).join(''):`<div class="vacio">${tab==='p'?'Nada pendiente de revisar.':'Nada aprobado todavía.'}</div>`;
+ $$('.hoja').forEach(el=>el.onclick=()=>{if(rol==='coord')return;hoja=cur.hojas[el.dataset.i];modo='res';renderZona();window.scrollTo(0,0)})}
+function render(){renderSel();renderTablero();renderZona();renderHojas();$('#banner').style.display=rol==='coord'?'':'none'}
+$$('.rol button').forEach(b=>b.onclick=()=>{rol=b.dataset.rol;$$('.rol button').forEach(x=>x.classList.toggle('on',x===b));modo='idle';render()});
+$('#bnuevo').onclick=()=>$('#mn').classList.add('on');$('#ncancel').onclick=()=>$('#mn').classList.remove('on');
+$('#nok').onclick=()=>{if(!$('#n_nombre').value){toast('Escribe el nombre del curso');return}cur={id:Date.now(),nombre:$('#n_nombre').value,grado:$('#n_grado').value,asig:$('#n_asig').value||'—',met:'Por definir',uni:'Unidad 1',obj:[],tem:[],rub:RUB0.map(r=>[...r]),mats:[],hojas:[]};cursos.push(cur);$('#mn').classList.remove('on');modo='idle';render();toast('Curso creado. Completa el tablero cuando quieras.')};
+$('#tipx').onclick=()=>$('#tip').remove();
+render();
+</script>
