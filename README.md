@@ -22,7 +22,7 @@ La IA no es el centro del sistema: es el mecanismo con el que se aprovecha el co
 |---|---|
 | Web | React 18 + TypeScript (Vite) |
 | API | Node 20 + Express 4 + TypeScript |
-| Datos | PostgreSQL 16 |
+| Datos | MySQL 8 |
 | Modelo de lenguaje | API de proveedor, detrás de `api/src/lib/llm.ts` (modo `mock` en desarrollo) |
 | Infraestructura | Docker Compose · GitHub Actions |
 
@@ -40,7 +40,7 @@ Desarrollo local sin Docker: `cd api && npm install && npm run dev` · `cd web &
 
 ```
 api/          Express + TypeScript: auth (JWT, roles), cursos, generación y validación
-api/db/       Esquema PostgreSQL (modelo conceptual en docs/diagramas/12-modelo-datos.png)
+api/db/       Esquema MySQL 8 (modelo conceptual en docs/diagramas/12-modelo-datos.png)
 web/          React + Vite (esqueleto; el diseño de referencia es el prototipo v2)
 prototipo/    Prototipos navegables v1 y v2, informe UX y capturas
 docs/         Propuesta (formato institucional), informe UX, diagramas draw.io y presentaciones
