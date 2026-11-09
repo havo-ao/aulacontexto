@@ -9,6 +9,9 @@ Plataforma de inteligencia artificial generativa **contextualizada por el docent
 - **Versión 2 (actual):** [`prototipo/prototipo-v2.html`](prototipo/prototipo-v2.html) · publicado en GitHub Pages: **https://havo-ao.github.io/aulacontexto/** (repositorio: https://github.com/havo-ao/aulacontexto)
 - Versión 1 (evaluada con usuarios): [`prototipo/prototipo-v1.html`](prototipo/prototipo-v1.html)
 - Informe de diseño, evaluación y rediseño: [`prototipo/informe-ux.md`](prototipo/informe-ux.md)
+- Informe de uso de IA y evaluación con agentes: [`docs/Informe-Uso-de-IA-y-Encuestas.pdf`](docs/Informe-Uso-de-IA-y-Encuestas.pdf)
+- Entrevistas de usabilidad con agentes de IA (P1 docente de primaria, P2 docente universitario, P3 coordinadora; no son docentes reales): [`prototipo/evidencia/`](prototipo/evidencia/)
+- Presentación de sustentación del prototipo: [`docs/presentaciones/03-sustentacion-prototipo.html`](docs/presentaciones/03-sustentacion-prototipo.html)
 
 El prototipo es de alta fidelidad visual y **sin backend**: la generación de texto está simulada a partir del contexto del curso. Cubre el flujo del docente (contexto → generar → validar → exportar) y la vista del coordinador.
 
@@ -42,7 +45,7 @@ Desarrollo local sin Docker: `cd api && npm install && npm run dev` · `cd web &
 api/          Express + TypeScript: auth (JWT, roles), cursos, generación y validación
 api/db/       Esquema MySQL 8 (modelo conceptual en docs/diagramas/12-modelo-datos.png)
 web/          React + Vite (esqueleto; el diseño de referencia es el prototipo v2)
-prototipo/    Prototipos navegables v1 y v2, informe UX y capturas
+prototipo/    Prototipos navegables v1 y v2, informe UX, capturas y evidencia de la evaluación con agentes
 docs/         Propuesta (formato institucional), informe UX, diagramas draw.io y presentaciones
 ```
 

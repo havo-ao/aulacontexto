@@ -2,7 +2,7 @@
 
 Equipo: Buitrago Karen · Cañón Andrés · Mora Nicolás · Seminario de Investigación · noviembre de 2026
 
-Entregables: (1) cuatro conceptos visuales, (2) prototipo v1, (3) revisión UX, (4) simulación de pruebas con tres usuarios, (5) rediseño del flujo en tres versiones, (6) prototipo v2 con la versión elegida.
+Entregables: (1) cuatro conceptos visuales, (2) prototipo v1, (3) revisión UX, (4) entrevistas de usabilidad con tres agentes de IA que encarnan perfiles de usuario, (5) rediseño del flujo en tres versiones, (6) prototipo v2 con la versión elegida.
 
 Prototipos: v1 `prototipo-v1.html` · v2 `prototipo-v2.html` (ambos navegables, sin backend; la generación está simulada).
 
@@ -52,9 +52,9 @@ Rol asumido: diseñador senior con referentes de Duolingo (claridad de una acci�
 
 ---
 
-## 3. Simulación de pruebas de usabilidad (v1)
+## 3. Evaluación de usabilidad con agentes de IA (v1)
 
-Método: pruebas moderadas simuladas, pensamiento en voz alta, cinco tareas. Los resultados se construyeron a partir de los problemas detectados en la revisión y de los patrones reportados en la literatura sobre adopción docente (Cheah et al., 2025; Sun et al., 2026); no son datos de usuarios reales.
+Método: tres agentes de IA (modelo Claude), cada uno instruido para encarnar un perfil de usuario, recorrieron el código fuente del prototipo v1 con un protocolo de sesión moderada y pensamiento en voz alta, y produjeron transcripción por tarea, cuestionario SUS y preguntas abiertas. Las transcripciones completas están en `evidencia/`. Lo que sigue es un resumen anticipado elaborado durante el diseño; los resultados consolidados y verificados están en el Informe de uso de IA y evaluación (sección 3). No son datos de docentes reales; se tratan como hipótesis de diseño que se validarán en Proyecto de Grado I.
 
 **Tareas.** T1 crear un curso · T2 subir un material y usarlo · T3 generar un plan de clase · T4 revisar, editar y aprobar · T5 (coordinador) encontrar los planes aprobados.
 
