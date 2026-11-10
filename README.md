@@ -11,7 +11,8 @@ Plataforma de inteligencia artificial generativa **contextualizada por el docent
 - Informe de diseño, evaluación y rediseño: [`prototipo/informe-ux.md`](prototipo/informe-ux.md)
 - Informe de uso de IA y evaluación con agentes: [`docs/Informe-Uso-de-IA-y-Encuestas.pdf`](docs/Informe-Uso-de-IA-y-Encuestas.pdf)
 - Entrevistas de usabilidad con agentes de IA (P1 docente de primaria, P2 docente universitario, P3 coordinadora; no son docentes reales): [`prototipo/evidencia/`](prototipo/evidencia/)
-- Presentación de sustentación del prototipo: [`docs/presentaciones/03-sustentacion-prototipo.html`](docs/presentaciones/03-sustentacion-prototipo.html)
+- Presentación de sustentación del prototipo (en línea): **https://havo-ao.github.io/aulacontexto/sustentacion.html**
+- Informe de uso de IA y evaluación con agentes (en línea): https://havo-ao.github.io/aulacontexto/docs/Informe-Uso-de-IA-y-Encuestas.pdf
 
 El prototipo es de alta fidelidad visual y **sin backend**: la generación de texto está simulada a partir del contexto del curso. Cubre el flujo del docente (contexto → generar → validar → exportar) y la vista del coordinador.
 
