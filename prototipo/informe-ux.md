@@ -2,7 +2,7 @@
 
 Equipo: Buitrago Karen · Cañón Andrés · Mora Nicolás · Seminario de Investigación · noviembre de 2026
 
-Entregables: (1) cuatro conceptos visuales, (2) prototipo v1, (3) revisión UX, (4) entrevistas de usabilidad con tres agentes de IA que encarnan perfiles de usuario, (5) rediseño del flujo en tres versiones, (6) prototipo v2 con la versión elegida.
+Entregables: (1) cuatro conceptos visuales, (2) prototipo v1, (3) revisión UX, (4) entrevistas de usabilidad con tres agentes de IA que encarnan perfiles de usuario, (5) rediseño del flujo en tres versiones, (6) prototipo v2 con la versión elegida, (7) ampliación de la v2 con los hallazgos de las entrevistas y un panel de inicio tipo dashboard.
 
 Prototipos: v1 `prototipo-v1.html` · v2 `prototipo-v2.html` (ambos navegables, sin backend; la generación está simulada).
 
@@ -157,4 +157,59 @@ Se implementa **Versión B** en el prototipo v2, incorporando de A la simplifica
 | H7 | Coordinador: misma aula, solo lectura, contenido completo y quién aprobó. |
 | H8 | Tiza solo en el título de la unidad; objetivos, temas y rúbrica en Literata. |
 
-Pendiente para la siguiente iteración: prueba con docentes reales en el sprint 0 de Proyecto de Grado I; historial de versiones comparado; carga de archivos reales (hoy solo texto pegado, coherente con el alcance de materiales en texto).
+### 5.1 Ampliación de la v2 tras las entrevistas con agentes
+
+Las tres entrevistas (ver `evidencia/` y el Informe de uso de IA y evaluación, sección 3) señalaron carencias que la versión B no cubría. Se atendieron en la misma v2:
+
+| Hallazgo de las entrevistas | Perfil | Cambio |
+|---|---|---|
+| Sin autor ni fecha de aprobación | P3 | Cada aprobación registra autor, fecha y hora; se muestra en la etiqueta de estado y en la tabla de coordinación. |
+| Coordinación sin lectura ni filtros | P3 | Vista de coordinación con fichas de resumen, tarjetas por curso, filtros por curso y tipo, buscador y lectura completa del documento. |
+| Regenerar borraba ediciones | P2 | Guardado automático; cada regeneración (por bloque o total) crea una versión consultable desde el panel «Versiones». |
+| Grado solo 6.º–11.º; contexto no editable | P1, P2 | Grados 1.º a 11.º; unidad, objetivos, temas y rúbrica editables en el tablero. |
+| «Aprobar» publicaba sin aviso | P1, P2, P3 | Confirmación previa que indica quién verá el documento. |
+| Retroalimentación con el mismo párrafo por criterio | P3 | Texto distinto por criterio; el docente elige el trabajo y agrega sus observaciones, que se incorporan al borrador y al panel de contexto. |
+| Solo texto pegado | P1, P2 | Arrastrar archivos .txt o .md; se lee el contenido y se muestra la vista previa. |
+| Sin inicio de sesión ni roles visibles | — | Pantalla de inicio de sesión con rol (docente / coordinación), coherente con la decisión de autenticación de la propuesta. |
+| Un solo tipo de generación | P2 | Tres acciones directas: plan de clase, taller y retroalimentación. |
+
+### 5.2 Panel de inicio tipo dashboard
+
+Motivación: tras la ampliación, el docente entraba directo al aula y la primera pantalla era texto y un tablero. Un docente con varios cursos necesita ver de un vistazo qué tiene pendiente antes de elegir un aula. Se agregó un **panel de inicio** y una navegación Panel / Aula en la barra superior.
+
+Decisiones de diseño:
+- **Fichas de pizarrón.** Los indicadores (cursos, pendientes de revisar, aprobados, materiales) son pequeños tableros verdes con marco de madera y números en tipografía de tiza, con un subtítulo en serif que explica el número. La metáfora del aula se mantiene en lugar de introducir tarjetas blancas genéricas de panel administrativo.
+- **Tarjetas por curso.** Cada curso es un tablero con su unidad, grado y asignatura, tres contadores (pendientes, aprobados, materiales) y una alerta si el tablero de contexto está incompleto. La tarjeta punteada «+ Nuevo curso» abre el alta en un paso.
+- **Pendientes como fichas.** Los borradores de todos los cursos aparecen como hojas del escritorio; al pulsar una se abre directamente el resultado en su aula.
+- **Actividad reciente y avance.** Lista de aprobaciones, borradores y materiales con un punto de color por tipo, y barras de avance de validación por curso.
+- **Color por significado.** Rojo para lo pendiente, verde para lo aprobado, violeta para lo que viene de la IA y madera para los materiales, igual que en el aula.
+
+La vista de coordinación recibió las mismas fichas y un resumen por curso (planes, talleres y retroalimentaciones aprobados, última aprobación); al pulsar una tarjeta se filtra la tabla de documentos.
+
+### 5.3 Capturas del prototipo v2
+
+![Inicio de sesión con rol](capturas/00-login.png)
+*Figura 1. Inicio de sesión con accesos de demostración por rol.*
+
+![Panel de inicio del docente](capturas/00b-panel.png)
+*Figura 2. Panel de inicio: fichas de pizarrón, tarjetas por curso, pendientes, actividad y avance.*
+
+![Aula del curso](capturas/01-aula.png)
+*Figura 3. Aula: tablero de contexto, materiales como chips y tres tipos de generación.*
+
+![Carga de material](capturas/03-material.png)
+*Figura 4. Carga de material por archivo o texto pegado.*
+
+![Progreso por etapas](capturas/04-procesando.png)
+*Figura 5. Progreso por etapas con anonimización, tiempo estimado y cancelar.*
+
+![Resultado con dos tintas](capturas/05-resultado.png)
+*Figura 6. Borrador con dos tintas, contexto usado y versiones.*
+
+![Retroalimentación por criterio](capturas/08-retroalimentacion.png)
+*Figura 7. Retroalimentación por criterio con alias del estudiante y observación del docente.*
+
+![Vista de coordinación](capturas/07-coordinador.png)
+*Figura 8. Coordinación: fichas, resumen por curso, filtros y tabla con autor y fecha.*
+
+Pendiente para la siguiente iteración: prueba con docentes reales en el sprint 0 de Proyecto de Grado I; revisión por coordinación separada de la aprobación del docente; aviso sobre el destino de los datos al cargar trabajos; fragmentos exactos enviados al modelo.
